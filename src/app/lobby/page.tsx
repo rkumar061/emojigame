@@ -8,6 +8,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Users, Play, Copy, Check, QrCode, Loader2, RotateCcw, Shield, Tv, ArrowLeft } from 'lucide-react';
 import { RoomState } from '@/types/game';
 import { sound } from '@/lib/sound';
+import { useRoomStore } from '@/lib/useRoomStore';
 
 function LobbyContent() {
   const searchParams = useSearchParams();
@@ -15,7 +16,7 @@ function LobbyContent() {
   const isHostView = searchParams.get('host') === 'true';
   const router = useRouter();
 
-  const [roomState, setRoomState] = useState<RoomState | null>(null);
+  const { roomState, isConnected, fetchRoomState } = useRoomStore(pin);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
   const [originUrl, setOriginUrl] = useState('');
@@ -32,44 +33,33 @@ function LobbyContent() {
     const cName = localStorage.getItem('gd_claimed_member_name') || '';
     setPlayerId(pId);
     setClaimedName(cName);
+  }, []);
 
-    fetchRoomState();
-    const interval = setInterval(fetchRoomState, 1000);
-    return () => clearInterval(interval);
-  }, [pin]);
+  // Real-time synchronization reaction
+  useEffect(() => {
+    if (!roomState) return;
 
-  const fetchRoomState = async () => {
-    try {
-      const pId = localStorage.getItem('gd_player_id');
-      const res = await fetch(`/api/room?pin=${pin}`);
-      const data = await res.json();
-      if (data.room) {
-        const room: RoomState = data.room;
-        setRoomState(room);
+    const pId = localStorage.getItem('gd_player_id');
 
-        // PLAYER CHECK: If player is NOT in host view and player was kicked by host
-        if (!isHostView && pId) {
-          const myPlayer = room.players[pId];
-          if (!myPlayer) {
-            // Player was removed/kicked by host -> redirect to name selection
-            localStorage.removeItem('gd_claimed_member_id');
-            localStorage.removeItem('gd_claimed_member_name');
-            router.push(`/join?pin=${pin}`);
-            return;
-          } else {
-            setClaimedCategory(myPlayer.claimedCategory || '');
-          }
-        }
-
-        // GAME START TRIGGER: Check if game status changed to PLAYING
-        if (room.status === 'PLAYING' && countdown === null) {
-          triggerCountdownSequence();
-        }
+    // PLAYER CHECK: If player is NOT in host view and player was kicked by host
+    if (!isHostView && pId) {
+      const myPlayer = roomState.players[pId];
+      if (!myPlayer) {
+        // Player was removed/kicked by host -> redirect to name selection
+        localStorage.removeItem('gd_claimed_member_id');
+        localStorage.removeItem('gd_claimed_member_name');
+        router.push(`/join?pin=${pin}`);
+        return;
+      } else {
+        setClaimedCategory(myPlayer.claimedCategory || '');
       }
-    } catch {
-      // ignore
     }
-  };
+
+    // GAME START TRIGGER: Check if game status changed to PLAYING
+    if (roomState.status === 'PLAYING' && countdown === null) {
+      triggerCountdownSequence();
+    }
+  }, [roomState, isHostView, pin, countdown, router]);
 
   const handleStartGame = async () => {
     try {

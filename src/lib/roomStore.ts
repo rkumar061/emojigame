@@ -4,6 +4,38 @@ import { INITIAL_MEMBERS } from './defaultData';
 // Global room state registry (in-memory per server process)
 const rooms: Record<string, RoomState> = {};
 
+// Listener registry for real-time WebSockets and SSE push streams
+type RoomListener = (room: RoomState) => void;
+const roomListeners: Record<string, Set<RoomListener>> = {};
+
+export function subscribeRoom(pin: string, listener: RoomListener): () => void {
+  const cleanPin = pin.trim().toUpperCase();
+  if (!roomListeners[cleanPin]) {
+    roomListeners[cleanPin] = new Set();
+  }
+  roomListeners[cleanPin].add(listener);
+
+  return () => {
+    if (roomListeners[cleanPin]) {
+      roomListeners[cleanPin].delete(listener);
+    }
+  };
+}
+
+export function notifyRoomListeners(pin: string): void {
+  const cleanPin = pin.trim().toUpperCase();
+  const room = rooms[cleanPin];
+  if (room && roomListeners[cleanPin]) {
+    roomListeners[cleanPin].forEach((callback) => {
+      try {
+        callback(room);
+      } catch {
+        // ignore listener error
+      }
+    });
+  }
+}
+
 // Helper to generate a default room state
 export function createDefaultRoom(pin = 'GD8492'): RoomState {
   const defaultConfig: GameConfig = {
@@ -46,20 +78,25 @@ export function createRoom(pin: string, config?: Partial<GameConfig>, members?: 
     room.members = members;
   }
   rooms[cleanPin] = room;
+  notifyRoomListeners(cleanPin);
   return room;
 }
 
 export function updateRoomConfig(pin: string, config: Partial<GameConfig>): RoomState | undefined {
-  const room = getRoom(pin);
+  const cleanPin = pin.trim().toUpperCase();
+  const room = getRoom(cleanPin);
   if (!room) return undefined;
   room.config = { ...room.config, ...config };
+  notifyRoomListeners(cleanPin);
   return room;
 }
 
 export function updateRoomMembers(pin: string, members: MemberProfile[]): RoomState | undefined {
-  const room = getRoom(pin);
+  const cleanPin = pin.trim().toUpperCase();
+  const room = getRoom(cleanPin);
   if (!room) return undefined;
   room.members = members;
+  notifyRoomListeners(cleanPin);
   return room;
 }
 
@@ -69,7 +106,8 @@ export function claimMemberName(
   playerName: string,
   memberId: string
 ): { success: boolean; error?: string; room?: RoomState } {
-  const room = getRoom(pin);
+  const cleanPin = pin.trim().toUpperCase();
+  const room = getRoom(cleanPin);
   if (!room) return { success: false, error: 'Room not found' };
 
   const member = room.members.find((m) => m.id === memberId);
@@ -109,11 +147,13 @@ export function claimMemberName(
     finished: false,
   };
 
+  notifyRoomListeners(cleanPin);
   return { success: true, room };
 }
 
 export function kickPlayer(pin: string, playerId: string): RoomState | undefined {
-  const room = getRoom(pin);
+  const cleanPin = pin.trim().toUpperCase();
+  const room = getRoom(cleanPin);
   if (!room) return undefined;
 
   // Free claimed member name
@@ -125,6 +165,7 @@ export function kickPlayer(pin: string, playerId: string): RoomState | undefined
   });
 
   delete room.players[playerId];
+  notifyRoomListeners(cleanPin);
   return room;
 }
 
@@ -133,7 +174,8 @@ export function updatePlayerScore(
   playerId: string,
   stats: Partial<RoomState['players'][string]>
 ): RoomState | undefined {
-  const room = getRoom(pin);
+  const cleanPin = pin.trim().toUpperCase();
+  const room = getRoom(cleanPin);
   if (!room) return undefined;
 
   const player = room.players[playerId];
@@ -144,11 +186,13 @@ export function updatePlayerScore(
     }
   }
 
+  notifyRoomListeners(cleanPin);
   return room;
 }
 
 export function setRoomStatus(pin: string, status: RoomState['status']): RoomState | undefined {
-  const room = getRoom(pin);
+  const cleanPin = pin.trim().toUpperCase();
+  const room = getRoom(cleanPin);
   if (!room) return undefined;
   room.status = status;
   if (status === 'PLAYING') {
@@ -167,5 +211,6 @@ export function setRoomStatus(pin: string, status: RoomState['status']): RoomSta
   } else if (status === 'FINISHED') {
     room.endedAt = Date.now();
   }
+  notifyRoomListeners(cleanPin);
   return room;
 }

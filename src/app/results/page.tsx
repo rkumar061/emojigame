@@ -7,12 +7,13 @@ import { useSearchParams } from 'next/navigation';
 import confetti from 'canvas-confetti';
 import { Trophy, Crown, Home, Award } from 'lucide-react';
 import { RoomState } from '@/types/game';
+import { useRoomStore } from '@/lib/useRoomStore';
 
 function ResultsContent() {
   const searchParams = useSearchParams();
   const pin = searchParams.get('pin') || 'GD8492';
 
-  const [roomState, setRoomState] = useState<RoomState | null>(null);
+  const { roomState, isConnected } = useRoomStore(pin);
 
   useEffect(() => {
     // Launch celebratory confetti burst
@@ -26,23 +27,7 @@ function ResultsContent() {
     } catch {
       // ignore
     }
-
-    fetchRoomState();
-    const interval = setInterval(fetchRoomState, 2000);
-    return () => clearInterval(interval);
-  }, [pin]);
-
-  const fetchRoomState = async () => {
-    try {
-      const res = await fetch(`/api/room?pin=${pin}`);
-      const data = await res.json();
-      if (data.room) {
-        setRoomState(data.room);
-      }
-    } catch {
-      // ignore
-    }
-  };
+  }, []);
 
   const playersList = Object.values(roomState?.players || {});
   // Sort leaderboard by Accuracy % desc, then Score desc

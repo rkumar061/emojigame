@@ -26,13 +26,14 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { RoomState, GameConfig } from '@/types/game';
+import { useRoomStore } from '@/lib/useRoomStore';
 
 function HostContent() {
   const searchParams = useSearchParams();
   const pin = searchParams.get('pin') || 'GD8492';
 
-  // Room State
-  const [roomState, setRoomState] = useState<RoomState | null>(null);
+  // Room State via real-time WebSocket & EventSource stream
+  const { roomState, isConnected, fetchRoomState } = useRoomStore(pin);
 
   // Modals
   const [showShareModal, setShowShareModal] = useState(false);
@@ -48,25 +49,13 @@ function HostContent() {
     if (typeof window !== 'undefined') {
       setOriginUrl(window.location.origin);
     }
-    fetchRoomState();
-    const interval = setInterval(fetchRoomState, 1500);
-    return () => clearInterval(interval);
-  }, [pin]);
+  }, []);
 
-  const fetchRoomState = async () => {
-    try {
-      const res = await fetch(`/api/room?pin=${pin}`);
-      const data = await res.json();
-      if (data.room) {
-        setRoomState(data.room);
-        if (data.room.config?.timerSeconds) {
-          setTimerSeconds(data.room.config.timerSeconds);
-        }
-      }
-    } catch {
-      // ignore
+  useEffect(() => {
+    if (roomState?.config?.timerSeconds) {
+      setTimerSeconds(roomState.config.timerSeconds);
     }
-  };
+  }, [roomState]);
 
   const handleStartGame = async () => {
     await fetch('/api/room', {

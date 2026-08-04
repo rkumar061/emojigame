@@ -5,13 +5,14 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, ArrowRight, Search, Sparkles, CheckCircle2, UserCheck } from 'lucide-react';
 import { RoomState, MemberProfile } from '@/types/game';
+import { useRoomStore } from '@/lib/useRoomStore';
 
 function JoinContent() {
   const searchParams = useSearchParams();
   const pin = searchParams.get('pin') || 'GD8492';
   const router = useRouter();
 
-  const [roomState, setRoomState] = useState<RoomState | null>(null);
+  const { roomState, isConnected } = useRoomStore(pin);
   const [searchTerm, setSearchTerm] = useState('');
   const [claimingMemberId, setClaimingMemberId] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -24,23 +25,7 @@ function JoinContent() {
       localStorage.setItem('gd_player_id', pId);
     }
     setPlayerId(pId);
-
-    fetchRoomState();
-    const interval = setInterval(fetchRoomState, 1500);
-    return () => clearInterval(interval);
-  }, [pin]);
-
-  const fetchRoomState = async () => {
-    try {
-      const res = await fetch(`/api/room?pin=${pin}`);
-      const data = await res.json();
-      if (data.room) {
-        setRoomState(data.room);
-      }
-    } catch {
-      // ignore
-    }
-  };
+  }, []);
 
   const handleClaimName = async (member: MemberProfile) => {
     if (claimingMemberId) return;

@@ -23,43 +23,32 @@ import {
 } from 'lucide-react';
 import { MemberProfile, IconItem, RoomState } from '@/types/game';
 import { INITIAL_MEMBERS, DEFAULT_DISTRACTOR_POOL } from '@/lib/defaultData';
-import { IconRenderer } from '@/components/IconRenderer';
 import { IconPickerModal } from '@/components/IconPickerModal';
+import { IconRenderer } from '@/components/IconRenderer';
+import { useRoomStore } from '@/lib/useRoomStore';
 
 export default function AdminPage() {
   const [pin, setPin] = useState('GD8492');
+
+  // Room state via real-time WebSocket/EventSource stream (zero polling)
+  const { roomState, isConnected, fetchRoomState } = useRoomStore(pin);
+  const [timerSetting, setTimerSetting] = useState<number>(30);
+
+  // Members edit state
   const [members, setMembers] = useState<MemberProfile[]>(INITIAL_MEMBERS);
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(INITIAL_MEMBERS[0].id);
+  const [selectedMemberId, setSelectedMemberId] = useState<string>('m1');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Icon Picker Modal state
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerTargetType, setPickerTargetType] = useState<'target' | 'distractor'>('target');
 
-  // Room state from server
-  const [roomState, setRoomState] = useState<RoomState | null>(null);
-  const [timerSetting, setTimerSetting] = useState<number>(30);
-
-  // Fetch room status
-  const fetchRoomStatus = async () => {
-    try {
-      const res = await fetch(`/api/room?pin=${pin}`);
-      const data = await res.json();
-      if (data.room) {
-        setRoomState(data.room);
-        setMembers(data.room.members || INITIAL_MEMBERS);
-        setTimerSetting(data.room.config.timerSeconds);
-      }
-    } catch {
-      // Fallback
-    }
-  };
-
   useEffect(() => {
-    fetchRoomStatus();
-    const interval = setInterval(fetchRoomStatus, 2000);
-    return () => clearInterval(interval);
-  }, [pin]);
+    if (roomState?.members) {
+      setMembers(roomState.members);
+      setTimerSetting(roomState.config?.timerSeconds || 30);
+    }
+  }, [roomState]);
 
   const selectedMember = members.find((m) => m.id === selectedMemberId) || members[0];
 
@@ -148,7 +137,7 @@ export default function AdminPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'SET_STATUS', pin, status: 'PLAYING' }),
     });
-    fetchRoomStatus();
+    fetchRoomState();
   };
 
   const handleKickPlayer = async (playerId: string) => {
@@ -157,7 +146,7 @@ export default function AdminPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'KICK', pin, playerId }),
     });
-    fetchRoomStatus();
+    fetchRoomState();
   };
 
   const filteredMembers = members.filter(
