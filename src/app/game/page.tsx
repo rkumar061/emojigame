@@ -28,6 +28,40 @@ function GameContent() {
   const [playerName, setPlayerName] = useState<string>('');
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const initialTimerRef = useRef<number>(30);
+  const timeLeftRef = useRef<number>(30);
+  const scoreRef = useRef<number>(0);
+  const correctCountRef = useRef<number>(0);
+  const wrongCountRef = useRef<number>(0);
+  const totalClicksRef = useRef<number>(0);
+  const comboStreakRef = useRef<number>(0);
+  const maxComboRef = useRef<number>(0);
+
+  // Sync refs with state for atomic calculations
+  useEffect(() => { timeLeftRef.current = timeLeft; }, [timeLeft]);
+  useEffect(() => { scoreRef.current = score; }, [score]);
+  useEffect(() => { correctCountRef.current = correctCount; }, [correctCount]);
+  useEffect(() => { wrongCountRef.current = wrongCount; }, [wrongCount]);
+  useEffect(() => { totalClicksRef.current = totalClicks; }, [totalClicks]);
+  useEffect(() => { comboStreakRef.current = comboStreak; }, [comboStreak]);
+  useEffect(() => { maxComboRef.current = maxCombo; }, [maxCombo]);
+
+  // Real-time live score update sender (pushes score changes to Host TV & Leaderboard)
+  const sendLiveScoreUpdate = (stats: Record<string, any>) => {
+    const pId = playerId || localStorage.getItem('gd_player_id');
+    if (!pId || !pin) return;
+
+    fetch('/api/room', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'UPDATE_SCORE',
+        pin,
+        playerId: pId,
+        stats,
+      }),
+    }).catch(() => {});
+  };
 
   useEffect(() => {
     const pId = localStorage.getItem('gd_player_id') || `p_${Date.now()}`;
@@ -43,7 +77,10 @@ function GameContent() {
       .then((data) => {
         if (data.room) {
           const room: RoomState = data.room;
-          setTimeLeft(room.config.timerSeconds || 30);
+          const tSec = room.config.timerSeconds || 30;
+          setTimeLeft(tSec);
+          initialTimerRef.current = tSec;
+          timeLeftRef.current = tSec;
 
           let currentMember = room.members.find((m) => m.id === cMemberId);
           if (!currentMember) {
@@ -119,88 +156,155 @@ function GameContent() {
     };
   }, [gameEnded]);
 
-  // Tile Click Handler
+  // Tile Click Handler with Real-Time Push & Time-Weighted Speed Scoring
   const handleTileClick = (tileId: string) => {
     if (gameEnded) return;
 
-    setTiles((prevTiles) =>
-      prevTiles.map((tile) => {
-        if (tile.id !== tileId || tile.clicked) return tile;
+    setTiles((prevTiles) => {
+      const targetTile = prevTiles.find((t) => t.id === tileId);
+      if (!targetTile || targetTile.clicked) return prevTiles;
 
-        const isCorrect = tile.isTarget;
-        setTotalClicks((tc) => tc + 1);
+      const isCorrect = targetTile.isTarget;
+      const newTotalClicks = totalClicksRef.current + 1;
+      totalClicksRef.current = newTotalClicks;
+      setTotalClicks(newTotalClicks);
 
-        if (isCorrect) {
-          const newCombo = comboStreak + 1;
-          setComboStreak(newCombo);
-          setMaxCombo((mc) => Math.max(mc, newCombo));
-          setCorrectCount((cc) => {
-            const nextCC = cc + 1;
-            if (nextCC >= 10) {
-              // All 10 targets found!
-              setTimeout(finishGame, 300);
-            }
-            return nextCC;
-          });
+      const currentTimeLeft = timeLeftRef.current;
+      const currentElapsedSec = Math.max(0, initialTimerRef.current - currentTimeLeft);
 
-          // Combo multiplier points
-          const multiplier = newCombo >= 5 ? 5 : newCombo >= 3 ? 3 : newCombo >= 2 ? 2 : 1;
-          const pointsEarned = 100 * multiplier;
-          setScore((s) => s + pointsEarned);
+      if (isCorrect) {
+        const newCombo = comboStreakRef.current + 1;
+        const newMaxCombo = Math.max(maxComboRef.current, newCombo);
+        comboStreakRef.current = newCombo;
+        maxComboRef.current = newMaxCombo;
+        setComboStreak(newCombo);
+        setMaxCombo(newMaxCombo);
 
-          // Audio
-          if (newCombo >= 3) {
-            sound.playCombo(newCombo);
-          } else {
-            sound.playCorrect(newCombo);
-          }
+        const newCorrectCount = correctCountRef.current + 1;
+        correctCountRef.current = newCorrectCount;
+        setCorrectCount(newCorrectCount);
 
-          return { ...tile, clicked: true, isCorrect: true };
-        } else {
-          // Penalty
-          setComboStreak(0);
-          setWrongCount((wc) => wc + 1);
-          setScore((s) => Math.max(0, s - 25));
-          sound.playWrong();
+        // TIME-WEIGHTED SCORING:
+        // Base points: 100
+        // Speed Bonus: 5 points * remaining seconds
+        // Combo Multiplier: 1x to 5x
+        const multiplier = newCombo >= 5 ? 5 : newCombo >= 3 ? 3 : newCombo >= 2 ? 2 : 1;
+        const speedBonus = currentTimeLeft * 5;
+        const pointsEarned = (100 + speedBonus) * multiplier;
 
-          return { ...tile, clicked: true, isCorrect: false };
+        let newScore = scoreRef.current + pointsEarned;
+        let isFinished = false;
+
+        // Completion bonus if all 10 targets found!
+        if (newCorrectCount >= 10) {
+          isFinished = true;
+          const completionBonus = currentTimeLeft * 50;
+          newScore += completionBonus;
         }
-      })
-    );
+
+        scoreRef.current = newScore;
+        setScore(newScore);
+
+        const newAccuracy = Math.round((newCorrectCount / newTotalClicks) * 100);
+
+        // Audio
+        if (newCombo >= 3) {
+          sound.playCombo(newCombo);
+        } else {
+          sound.playCorrect(newCombo);
+        }
+
+        // Send instant real-time score update to Host TV & Leaderboard
+        sendLiveScoreUpdate({
+          score: newScore,
+          correctCount: newCorrectCount,
+          wrongCount: wrongCountRef.current,
+          totalClicks: newTotalClicks,
+          accuracy: newAccuracy,
+          comboStreak: newCombo,
+          maxCombo: newMaxCombo,
+          timeSec: currentElapsedSec,
+          finished: isFinished,
+        });
+
+        if (isFinished) {
+          setTimeout(() => {
+            finishGame(newScore, newCorrectCount, wrongCountRef.current, newTotalClicks, newAccuracy, newCombo, newMaxCombo, currentElapsedSec);
+          }, 300);
+        }
+
+        return prevTiles.map((t) => (t.id === tileId ? { ...t, clicked: true, isCorrect: true } : t));
+      } else {
+        // Wrong click penalty (-25 pts & reset combo)
+        comboStreakRef.current = 0;
+        setComboStreak(0);
+
+        const newWrongCount = wrongCountRef.current + 1;
+        wrongCountRef.current = newWrongCount;
+        setWrongCount(newWrongCount);
+
+        const newScore = Math.max(0, scoreRef.current - 25);
+        scoreRef.current = newScore;
+        setScore(newScore);
+
+        sound.playWrong();
+
+        const newAccuracy = Math.round((correctCountRef.current / newTotalClicks) * 100);
+
+        // Send instant real-time update
+        sendLiveScoreUpdate({
+          score: newScore,
+          correctCount: correctCountRef.current,
+          wrongCount: newWrongCount,
+          totalClicks: newTotalClicks,
+          accuracy: newAccuracy,
+          comboStreak: 0,
+          maxCombo: maxComboRef.current,
+          timeSec: currentElapsedSec,
+          finished: false,
+        });
+
+        return prevTiles.map((t) => (t.id === tileId ? { ...t, clicked: true, isCorrect: false } : t));
+      }
+    });
   };
 
-  // Finish Game and save stats to API
-  const finishGame = async () => {
+  // Finish Game handler
+  const finishGame = async (
+    finalScore?: number,
+    finalCorrect?: number,
+    finalWrong?: number,
+    finalClicks?: number,
+    finalAcc?: number,
+    finalCombo?: number,
+    finalMaxC?: number,
+    elapsed?: number
+  ) => {
     if (gameEnded) return;
     setGameEnded(true);
     sound.playFanfare();
 
-    const finalAccuracy = totalClicks > 0 ? Math.round((correctCount / totalClicks) * 100) : 100;
+    const actualScore = finalScore !== undefined ? finalScore : scoreRef.current;
+    const actualCorrect = finalCorrect !== undefined ? finalCorrect : correctCountRef.current;
+    const actualWrong = finalWrong !== undefined ? finalWrong : wrongCountRef.current;
+    const actualClicks = finalClicks !== undefined ? finalClicks : totalClicksRef.current;
+    const actualAcc = finalAcc !== undefined ? finalAcc : (actualClicks > 0 ? Math.round((actualCorrect / actualClicks) * 100) : 100);
+    const actualMaxCombo = finalMaxC !== undefined ? finalMaxC : maxComboRef.current;
+    const actualElapsed = elapsed !== undefined ? elapsed : Math.max(0, initialTimerRef.current - timeLeftRef.current);
+
     const finalStats = {
-      score,
-      correctCount,
-      wrongCount,
-      totalClicks,
-      accuracy: finalAccuracy,
-      comboStreak,
-      maxCombo,
+      score: actualScore,
+      correctCount: actualCorrect,
+      wrongCount: actualWrong,
+      totalClicks: actualClicks,
+      accuracy: actualAcc,
+      comboStreak: 0,
+      maxCombo: actualMaxCombo,
+      timeSec: actualElapsed,
       finished: true,
     };
 
-    try {
-      await fetch('/api/room', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'UPDATE_SCORE',
-          pin,
-          playerId,
-          stats: finalStats,
-        }),
-      });
-    } catch {
-      // ignore
-    }
+    sendLiveScoreUpdate(finalStats);
 
     setTimeout(() => {
       router.push(`/results?pin=${pin}`);

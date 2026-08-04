@@ -111,7 +111,8 @@ function HostContent() {
   const playersList = Object.values(roomState?.players || {});
   const sortedPlayers = [...playersList].sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
-    return b.accuracy - a.accuracy;
+    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+    return (a.timeSec || 99) - (b.timeSec || 99);
   });
 
   const top1 = sortedPlayers[0];
@@ -381,6 +382,8 @@ function HostContent() {
                       <th className="pb-3 px-3">Rank</th>
                       <th className="pb-3 px-3">Player Name</th>
                       <th className="pb-3 px-3">Category</th>
+                      <th className="pb-3 px-3 text-center">Progress</th>
+                      <th className="pb-3 px-3 text-right">Time</th>
                       <th className="pb-3 px-3 text-right">Score</th>
                       <th className="pb-3 px-3 text-right">Accuracy</th>
                       <th className="pb-3 px-3 text-right">Max Combo</th>
@@ -399,6 +402,12 @@ function HostContent() {
                         </td>
                         <td className="py-3.5 px-3 font-extrabold text-white">{player.name}</td>
                         <td className="py-3.5 px-3 text-amber-300">{player.claimedCategory}</td>
+                        <td className="py-3.5 px-3 text-center font-bold text-emerald-300">
+                          {player.correctCount || 0} / 10
+                        </td>
+                        <td className="py-3.5 px-3 text-right font-mono font-bold text-cyan-300">
+                          {player.timeSec ? `${player.timeSec}s` : '-'}
+                        </td>
                         <td className="py-3.5 px-3 text-right font-mono font-black text-emerald-400 text-lg">
                           {player.score}
                         </td>
