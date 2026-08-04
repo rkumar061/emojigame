@@ -2,16 +2,19 @@
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Flame, Check, X, Clock } from 'lucide-react';
+import { Flame, Check, X, Clock, Trophy, Target, Sparkles, CheckCircle2 } from 'lucide-react';
 import { RoomState, MemberProfile, IconGridTile } from '@/types/game';
 import { INITIAL_MEMBERS, DEFAULT_DISTRACTOR_POOL } from '@/lib/defaultData';
 import { IconRenderer } from '@/components/IconRenderer';
 import { sound } from '@/lib/sound';
+import { useRoomStore } from '@/lib/useRoomStore';
 
 function GameContent() {
   const searchParams = useSearchParams();
   const pin = searchParams.get('pin') || 'GD8492';
   const router = useRouter();
+
+  const { roomState } = useRoomStore(pin);
 
   // State
   const [member, setMember] = useState<MemberProfile>(INITIAL_MEMBERS[0]);
@@ -313,57 +316,88 @@ function GameContent() {
 
   const comboMultiplier = comboStreak >= 5 ? 5 : comboStreak >= 3 ? 3 : comboStreak >= 2 ? 2 : 1;
 
+  const playersList = Object.values(roomState?.players || {});
+  const sortedPlayers = [...playersList].sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.accuracy !== a.accuracy) return b.accuracy - a.accuracy;
+    return (a.timeSec || 99) - (b.timeSec || 99);
+  });
+  const myRankIndex = sortedPlayers.findIndex((p) => p.id === playerId);
+  const myRank = myRankIndex >= 0 ? myRankIndex + 1 : 1;
+  const totalPlayers = sortedPlayers.length || 1;
+
+  const currentAcc = totalClicks > 0 ? Math.round((correctCount / totalClicks) * 100) : 100;
+
   return (
-    <div className="h-screen max-h-[100dvh] w-screen overflow-hidden bg-[#0b0517] text-slate-100 flex flex-col justify-between p-2 sm:p-3 select-none font-sans">
-      {/* COMPACT TOP HEADER BAR */}
-      <header className="h-14 sm:h-16 w-full rounded-2xl bg-slate-950/80 border border-purple-500/30 px-3 sm:px-5 flex items-center justify-between shadow-xl backdrop-blur-md gap-2 shrink-0">
-        {/* Assigned Member Target Name */}
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-300 font-extrabold text-xs shrink-0">
-            🎯
+    <div className="h-screen max-h-[100dvh] w-screen overflow-hidden bg-[#0b0517] text-slate-100 flex flex-col justify-between p-1.5 sm:p-3 select-none font-sans gap-1.5">
+      {/* HIGH-DENSITY COMPACT LIVE ANALYTICS HUD */}
+      <header className="w-full bg-slate-950/90 border border-purple-500/30 rounded-2xl p-2 sm:p-2.5 shadow-2xl backdrop-blur-xl flex flex-col gap-1.5 shrink-0">
+        {/* Row 1: Target Member & Live Rank Badge */}
+        <div className="flex items-center justify-between gap-2 border-b border-purple-500/20 pb-1">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-purple-600/30 border border-purple-500/40 flex items-center justify-center text-purple-300 font-black text-xs shrink-0">
+              🎯
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] text-purple-300 font-bold uppercase tracking-wider">Find 10 Icons For: </span>
+              <span className="font-extrabold text-xs sm:text-sm text-amber-300 truncate">{member.name}</span>
+              <span className="text-[11px] text-slate-400 font-medium hidden xs:inline"> ({member.category})</span>
+            </div>
           </div>
-          <div className="min-w-0">
-            <div className="text-[10px] sm:text-xs font-semibold text-purple-300 uppercase tracking-wider truncate">
-              Find 10 Items For:
-            </div>
-            <div className="font-extrabold text-xs sm:text-base text-amber-300 truncate">
-              {member.name} <span className="text-slate-400 font-normal text-xs">({member.category})</span>
-            </div>
+
+          {/* Live Rank Badge */}
+          <div className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-purple-600/20 border border-amber-400/40 px-2.5 py-0.5 sm:py-1 rounded-xl shrink-0">
+            <Trophy size={14} className="text-amber-400" />
+            <span className="text-xs font-black text-amber-300">
+              {myRank === 1 ? '🥇 1st' : myRank === 2 ? '🥈 2nd' : myRank === 3 ? '🥉 3rd' : `#${myRank}`}
+            </span>
+            <span className="text-[10px] font-semibold text-slate-400">/ {totalPlayers}</span>
           </div>
         </div>
 
-        {/* Center Timer & Match Counter */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 bg-slate-900 border border-purple-500/30 px-2.5 py-1 rounded-xl">
-            <Clock size={16} className="text-amber-400 animate-pulse" />
-            <span className="font-mono text-sm sm:text-lg font-extrabold text-amber-300">{timeLeft}s</span>
-          </div>
-
-          <div className="hidden xs:flex items-center gap-1.5 bg-purple-950/80 border border-purple-500/40 px-2.5 py-1 rounded-xl">
-            <span className="text-xs font-bold text-emerald-400">{correctCount} / 10</span>
-            <span className="text-[10px] text-slate-400 uppercase">Found</span>
-          </div>
-        </div>
-
-        {/* Right Score & Combo Streak Multiplier */}
-        <div className="flex items-center gap-2">
-          {comboStreak >= 2 && (
-            <div className="flex items-center gap-1 px-2 py-1 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 text-white font-extrabold text-xs animate-bounce shadow-lg">
-              <Flame size={14} /> {comboMultiplier}x COMBO
+        {/* Row 2: Analytics Cards Grid (Time, Found, Score, Accuracy, Combo) */}
+        <div className="grid grid-cols-5 gap-1 text-center items-center">
+          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
+              <Clock size={10} className="text-amber-400 animate-pulse" /> Time
             </div>
-          )}
+            <span className="font-mono text-xs sm:text-base font-black text-amber-300">{timeLeft}s</span>
+          </div>
 
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] text-purple-300 uppercase font-semibold">Score</span>
-            <span className="font-mono text-base sm:text-xl font-black text-emerald-400 drop-shadow">
-              {score}
+          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
+              <CheckCircle2 size={10} className="text-emerald-400" /> Found
+            </div>
+            <span className="font-mono text-xs sm:text-base font-black text-emerald-300">{correctCount}/10</span>
+          </div>
+
+          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
+              <Sparkles size={10} className="text-purple-400" /> Score
+            </div>
+            <span className="font-mono text-xs sm:text-base font-black text-emerald-400">{score}</span>
+          </div>
+
+          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
+              <Target size={10} className="text-cyan-400" /> Acc
+            </div>
+            <span className="font-mono text-xs sm:text-base font-black text-cyan-300">{currentAcc}%</span>
+          </div>
+
+          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+            <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
+              <Flame size={10} className="text-rose-400" /> Combo
+            </div>
+            <span className="font-mono text-xs sm:text-base font-black text-amber-400">
+              {comboStreak >= 2 ? `🔥 ${comboMultiplier}x` : '1x'}
             </span>
           </div>
         </div>
       </header>
 
       {/* FULL-PAGE ZERO-SCROLL 40-TILE GRID CONTAINER */}
-      <main className="flex-1 w-full max-h-[calc(100dvh-75px)] my-1 grid grid-cols-5 grid-rows-8 sm:grid-cols-8 sm:grid-rows-5 md:grid-cols-10 md:grid-rows-4 gap-1.5 sm:gap-2 justify-center items-center overflow-hidden">
+      <main className="flex-1 w-full max-h-[calc(100dvh-105px)] grid grid-cols-5 grid-rows-8 sm:grid-cols-8 sm:grid-rows-5 md:grid-cols-10 md:grid-rows-4 gap-1 sm:gap-1.5 justify-center items-center overflow-hidden">
         {tiles.map((tile) => {
           let tileBg = 'bg-slate-900/80 border-purple-500/25 hover:border-purple-400/60 text-slate-200';
           if (tile.clicked) {
@@ -379,11 +413,11 @@ function GameContent() {
               key={tile.id}
               onClick={() => handleTileClick(tile.id)}
               disabled={tile.clicked || gameEnded}
-              className={`w-full h-full min-h-0 flex flex-col items-center justify-center rounded-xl sm:rounded-2xl border backdrop-blur-md transition-all duration-150 transform active:scale-95 select-none relative group overflow-hidden ${tileBg}`}
+              className={`w-full h-full min-h-0 flex flex-col items-center justify-center rounded-lg sm:rounded-xl border backdrop-blur-md transition-all duration-150 transform active:scale-95 select-none relative group overflow-hidden ${tileBg}`}
             >
               <IconRenderer
                 icon={tile.icon}
-                size="clamp(1.4rem, 3.5vh, 2.4rem)"
+                size="clamp(1.2rem, 3.2vh, 2.2rem)"
                 className={tile.clicked && tile.isCorrect ? 'text-emerald-300 scale-110' : ''}
               />
 
@@ -391,12 +425,12 @@ function GameContent() {
               {tile.clicked && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[1px]">
                   {tile.isCorrect ? (
-                    <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg">
-                      <Check size={14} strokeWidth={3} />
+                    <div className="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg">
+                      <Check size={12} strokeWidth={3} />
                     </div>
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg">
-                      <X size={14} strokeWidth={3} />
+                    <div className="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-lg">
+                      <X size={12} strokeWidth={3} />
                     </div>
                   )}
                 </div>
