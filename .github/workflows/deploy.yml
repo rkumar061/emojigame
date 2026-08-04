@@ -1,0 +1,40 @@
+name: Deploy egv2 App (Main Branch)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, x64, egv2]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Sync Files to Target Directory
+        run: |
+          mkdir -p ${{ vars.EGV2_APP_DIR }}
+          rsync -avz --exclude '.git' --exclude 'node_modules' --exclude '.next' ./ ${{ vars.EGV2_APP_DIR }}/
+
+      - name: Install Dependencies & Build
+        run: |
+          cd ${{ vars.EGV2_APP_DIR }}
+          npm ci
+          npm run build
+
+      - name: Restart PM2 Application
+        run: |
+          cd ${{ vars.EGV2_APP_DIR }}
+          export PORT="${{ vars.EGV2_APP_PORT }}"
+          export NODE_ENV="production"
+          pm2 describe ${{ vars.EGV2_PM2_APP_NAME }} >/dev/null 2>&1 && pm2 restart ${{ vars.EGV2_PM2_APP_NAME }} --update-env || pm2 start npm --name ${{ vars.EGV2_PM2_APP_NAME }} -- start
+          pm2 save
