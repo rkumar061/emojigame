@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import confetti from 'canvas-confetti';
-import { Trophy, Crown, Share2, Sparkles, X, Check, Copy, Award, Zap } from 'lucide-react';
+import { Trophy, Crown, Share2, Sparkles, X, Check, Award, Zap, Download, Loader2 } from 'lucide-react';
+import { toBlob } from 'html-to-image';
 import { RoomState } from '@/types/game';
 import { useRoomStore } from '@/lib/useRoomStore';
 
@@ -15,7 +16,10 @@ function ResultsContent() {
   const { roomState } = useRoomStore(pin);
   const [showShareModal, setShowShareModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [myPlayerId, setMyPlayerId] = useState('');
+
+  const storyCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -53,29 +57,50 @@ function ResultsContent() {
   const myPlayer = myRankIndex >= 0 ? sortedPlayers[myRankIndex] : sortedPlayers[0];
   const myRank = myRankIndex >= 0 ? myRankIndex + 1 : 1;
 
-  const handleShareStory = async () => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
-    const shareText = `🏆 I ranked #${myRank} with ${myPlayer?.score || 0} PTS in the Grape Dawn Speed Quiz! 🍇 Check out the leaderboard:`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Grape Dawn Victory Story',
-          text: shareText,
-          url: shareUrl,
-        });
-        return;
-      } catch {
-        // Fallback to clipboard copy
-      }
-    }
+  // Convert Instagram Story DOM element into PNG Image Blob and Share/Download
+  const handleShareStoryImage = async (forceDownload = false) => {
+    if (!storyCardRef.current || isGeneratingImage) return;
+    setIsGeneratingImage(true);
 
     try {
-      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      const blob = await toBlob(storyCardRef.current, {
+        pixelRatio: 2,
+        cacheBust: true,
+        quality: 0.95,
+      });
+
+      if (!blob) throw new Error('Failed to generate image blob');
+
+      const fileName = `Grape-Dawn-Victory-Rank-${myRank}.png`;
+      const imageFile = new File([blob], fileName, { type: 'image/png' });
+
+      // 1. Native Mobile Image File Sharing (Instagram, WhatsApp, iMessage, etc.)
+      if (!forceDownload && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
+        await navigator.share({
+          title: 'Grape Dawn Victory Card',
+          text: `🏆 I ranked #${myRank} in the Grape Dawn Speed Quiz! 🍇`,
+          files: [imageFile],
+        });
+        setIsGeneratingImage(false);
+        return;
+      }
+
+      // 2. Direct PNG Download Fallback
+      const imageUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = imageUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(imageUrl);
+
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 3000);
-    } catch {
-      // ignore
+    } catch (err) {
+      console.error('Error generating image share card:', err);
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
 
@@ -101,7 +126,7 @@ function ResultsContent() {
           onClick={() => setShowShareModal(true)}
           className="flex items-center gap-2 text-xs sm:text-sm font-extrabold px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600 text-white shadow-lg hover:brightness-110 active:scale-95 transition"
         >
-          <Share2 size={16} className="text-white animate-pulse" /> Share Story
+          <Share2 size={16} className="text-white animate-pulse" /> Share Story Image
         </button>
       </header>
 
@@ -174,6 +199,39 @@ function ResultsContent() {
           </div>
         </div>
 
+        {/* PERSONAL PLAYER PERFORMANCE BANNER */}
+        {myPlayer && (
+          <div className="w-full max-w-2xl bg-gradient-to-r from-amber-500/20 via-purple-600/30 to-pink-500/20 border-2 border-amber-400/50 rounded-3xl p-4 sm:p-5 shadow-[0_0_30px_rgba(245,158,11,0.25)] backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-400 text-amber-950 flex items-center justify-center font-black text-xl shadow-lg shrink-0">
+                {myRank === 1 ? '🥇' : myRank === 2 ? '🥈' : myRank === 3 ? '🥉' : `#${myRank}`}
+              </div>
+              <div>
+                <div className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5 justify-center sm:justify-start">
+                  Your Final Standing <span className="px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 text-[9px] font-black">YOU</span>
+                </div>
+                <div className="text-lg sm:text-xl font-black text-white">{myPlayer.name}</div>
+                <div className="text-xs text-purple-200">Target Member: <span className="text-amber-300 font-bold">{myPlayer.claimedMemberName}</span></div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 border-t sm:border-t-0 sm:border-l border-purple-500/30 pt-2 sm:pt-0 sm:pl-4">
+              <div className="text-center font-mono">
+                <div className="text-[10px] text-slate-400 uppercase font-sans">Score</div>
+                <div className="text-base sm:text-xl font-black text-emerald-400">{myPlayer.score}</div>
+              </div>
+              <div className="text-center font-mono">
+                <div className="text-[10px] text-slate-400 uppercase font-sans">Accuracy</div>
+                <div className="text-base sm:text-xl font-black text-cyan-300">{myPlayer.accuracy}%</div>
+              </div>
+              <div className="text-center font-mono">
+                <div className="text-[10px] text-slate-400 uppercase font-sans">Time</div>
+                <div className="text-base sm:text-xl font-black text-amber-300">{myPlayer.timeSec ? `${myPlayer.timeSec}s` : '-'}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Detailed Leaderboard Table */}
         <div className="w-full bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl space-y-4">
           <div className="flex items-center justify-between">
@@ -185,7 +243,7 @@ function ResultsContent() {
               onClick={() => setShowShareModal(true)}
               className="text-xs font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 bg-purple-950/80 border border-purple-500/40 px-3 py-1 rounded-xl transition"
             >
-              <Share2 size={13} /> Share Card
+              <Share2 size={13} /> Share Story Card
             </button>
           </div>
 
@@ -204,30 +262,47 @@ function ResultsContent() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-purple-500/10">
-                {sortedPlayers.map((player, idx) => (
-                  <tr key={player.id} className="hover:bg-purple-950/30 transition">
-                    <td className="py-3 px-2 font-bold text-slate-300">
-                      {idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}
-                    </td>
-                    <td className="py-3 px-2 font-bold text-white">{player.name}</td>
-                    <td className="py-3 px-2 text-amber-300">{player.claimedMemberName}</td>
-                    <td className="py-3 px-2 text-center font-bold text-emerald-300 font-mono">
-                      {player.correctCount || 0}/10
-                    </td>
-                    <td className="py-3 px-2 text-right font-mono font-bold text-cyan-300">
-                      {player.timeSec ? `${player.timeSec}s` : '-'}
-                    </td>
-                    <td className="py-3 px-2 text-right font-mono font-extrabold text-emerald-400">
-                      {player.score}
-                    </td>
-                    <td className="py-3 px-2 text-right font-bold text-purple-300 font-mono">
-                      {player.accuracy}%
-                    </td>
-                    <td className="py-3 px-2 text-right font-bold text-amber-400">
-                      🔥 {player.maxCombo}x
-                    </td>
-                  </tr>
-                ))}
+                {sortedPlayers.map((player, idx) => {
+                  const isSelf = player.id === myPlayerId;
+                  return (
+                    <tr
+                      key={player.id}
+                      className={`transition ${
+                        isSelf
+                          ? 'bg-gradient-to-r from-amber-500/25 via-purple-600/30 to-pink-500/25 border-l-4 border-amber-400 font-extrabold shadow-lg'
+                          : 'hover:bg-purple-950/30'
+                      }`}
+                    >
+                      <td className="py-3 px-2 font-bold text-slate-300">
+                        {idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}
+                      </td>
+                      <td className="py-3 px-2 font-bold text-white flex items-center gap-1.5">
+                        {player.name}
+                        {isSelf && (
+                          <span className="px-2 py-0.5 rounded-md bg-amber-400 text-amber-950 text-[10px] font-black uppercase tracking-wider shadow">
+                            YOU
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-2 text-amber-300">{player.claimedMemberName}</td>
+                      <td className="py-3 px-2 text-center font-bold text-emerald-300 font-mono">
+                        {player.correctCount || 0}/10
+                      </td>
+                      <td className="py-3 px-2 text-right font-mono font-bold text-cyan-300">
+                        {player.timeSec ? `${player.timeSec}s` : '-'}
+                      </td>
+                      <td className="py-3 px-2 text-right font-mono font-extrabold text-emerald-400 text-base">
+                        {player.score}
+                      </td>
+                      <td className="py-3 px-2 text-right font-bold text-purple-300 font-mono">
+                        {player.accuracy}%
+                      </td>
+                      <td className="py-3 px-2 text-right font-bold text-amber-400">
+                        🔥 {player.maxCombo}x
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -237,11 +312,11 @@ function ResultsContent() {
       {/* VERTICAL INSTAGRAM STORY STYLED SHARE MODAL */}
       {showShareModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto">
-          <div className="relative flex flex-col items-center max-w-sm w-full space-y-4">
+          <div className="relative flex flex-col items-center max-w-sm w-full space-y-3">
             {/* Modal Header Actions */}
             <div className="w-full flex items-center justify-between text-white">
               <span className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
-                <Sparkles size={16} className="text-amber-400" /> Story Preview (9:16 Layout)
+                <Sparkles size={16} className="text-amber-400" /> Instagram Story Image Card
               </span>
               <button
                 onClick={() => setShowShareModal(false)}
@@ -251,8 +326,11 @@ function ResultsContent() {
               </button>
             </div>
 
-            {/* 9:16 INSTAGRAM STORY CARD CANVAS */}
-            <div className="w-[310px] sm:w-[330px] aspect-[9/16] rounded-3xl bg-gradient-to-b from-[#1e0938] via-[#0c051a] to-[#2a0b4d] border-2 border-purple-500/50 p-5 flex flex-col justify-between shadow-[0_0_50px_rgba(168,85,247,0.4)] relative overflow-hidden select-none">
+            {/* 9:16 INSTAGRAM STORY CARD CANVAS (CONVERTED DIRECTLY TO PNG) */}
+            <div
+              ref={storyCardRef}
+              className="w-[310px] sm:w-[330px] aspect-[9/16] rounded-3xl bg-gradient-to-b from-[#1e0938] via-[#0c051a] to-[#2a0b4d] border-2 border-purple-500/50 p-5 flex flex-col justify-between shadow-[0_0_50px_rgba(168,85,247,0.4)] relative overflow-hidden select-none"
+            >
               {/* Card Decorative Flares */}
               <div className="absolute -top-16 -left-16 w-44 h-44 bg-purple-600/30 rounded-full blur-2xl" />
               <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-amber-500/30 rounded-full blur-2xl" />
@@ -265,6 +343,7 @@ function ResultsContent() {
                   width={150}
                   height={40}
                   className="object-contain filter drop-shadow-[0_0_12px_rgba(168,85,247,0.7)]"
+                  priority
                 />
                 <div className="text-[10px] font-bold text-amber-300 uppercase tracking-widest flex items-center gap-1">
                   <Zap size={11} className="text-amber-400" /> Speed Member Matching Quiz
@@ -335,19 +414,36 @@ function ResultsContent() {
               </div>
             </div>
 
-            {/* Share / Copy Trigger Controls */}
-            <div className="w-full flex gap-2">
+            {/* Share & Download Image Actions */}
+            <div className="w-full flex flex-col gap-2">
               <button
-                onClick={handleShareStory}
-                className="flex-1 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-purple-600 text-white font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition"
+                onClick={() => handleShareStoryImage(false)}
+                disabled={isGeneratingImage}
+                className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600 text-white font-extrabold text-sm shadow-xl flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition disabled:opacity-50"
               >
-                {copiedLink ? (
+                {isGeneratingImage ? (
                   <>
-                    <Check size={18} className="text-emerald-300" /> Link Copied to Clipboard!
+                    <Loader2 size={18} className="animate-spin" /> Generating Story Image...
                   </>
                 ) : (
                   <>
-                    <Share2 size={18} /> Share Victory Card
+                    <Share2 size={18} /> Share Story Image
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => handleShareStoryImage(true)}
+                disabled={isGeneratingImage}
+                className="w-full py-2.5 px-4 rounded-2xl bg-slate-900 border border-purple-500/40 text-purple-200 font-bold text-xs shadow flex items-center justify-center gap-2 hover:bg-slate-800 active:scale-95 transition disabled:opacity-50"
+              >
+                {copiedLink ? (
+                  <>
+                    <Check size={16} className="text-emerald-400" /> Story PNG Saved!
+                  </>
+                ) : (
+                  <>
+                    <Download size={16} /> Save Image (PNG)
                   </>
                 )}
               </button>

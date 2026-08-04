@@ -301,83 +301,93 @@ function HostContent() {
           </div>
         )}
 
-        {/* ONCE GAME STARTED: HIGH-IMPACT LEADERBOARD STYLED LAYOUT */}
+        {/* ONCE GAME STARTED: SIDE-BY-SIDE SPLIT VIEW LAYOUT */}
         {isPlaying && (
-          <div className="space-y-8 animate-fade-in">
-            {/* Top 3 Victory Podium Header */}
-            <div className="w-full grid grid-cols-3 gap-3 sm:gap-6 items-end max-w-4xl mx-auto pt-4">
-              {/* 2nd Place */}
-              <div className="flex flex-col items-center">
-                {top2 ? (
-                  <div className="flex flex-col items-center mb-2">
-                    <div className="w-12 h-12 rounded-full bg-slate-400 text-slate-950 flex items-center justify-center font-extrabold text-xl shadow-lg mb-1">
-                      🥈
-                    </div>
-                    <div className="font-extrabold text-sm sm:text-base text-slate-200 text-center truncate max-w-[120px]">
-                      {top2.name}
-                    </div>
-                    <div className="text-xs font-bold text-emerald-400">{top2.score} pts</div>
-                  </div>
-                ) : null}
-                <div className="w-full h-32 sm:h-40 bg-gradient-to-t from-slate-800 to-slate-700 rounded-t-3xl border-t-4 border-slate-400 flex flex-col items-center justify-center shadow-2xl">
-                  <span className="font-black text-2xl sm:text-3xl text-slate-300">2nd</span>
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start animate-fade-in w-full">
+            {/* LEFT COLUMN: 3D Victory Podium (xl:col-span-5) */}
+            <div className="xl:col-span-5 bg-slate-900/80 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col items-center justify-between min-h-[460px]">
+              <div className="text-center space-y-1 mb-4">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                  <Crown size={14} className="text-amber-400" /> Leaderboard Podium
                 </div>
+                <h3 className="text-xl font-black text-white">Top Champions</h3>
               </div>
 
-              {/* 1st Place GOLD */}
-              <div className="flex flex-col items-center -mt-8">
-                {top1 ? (
-                  <div className="flex flex-col items-center mb-2 animate-bounce">
-                    <Crown size={36} className="text-amber-400 filter drop-shadow-[0_0_12px_rgba(245,158,11,0.9)]" />
-                    <div className="w-16 h-16 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center font-black text-3xl shadow-2xl border-2 border-amber-200 mb-1">
-                      🥇
+              {/* 3D VICTORY PODIUM */}
+              <div className="w-full grid grid-cols-3 gap-2 sm:gap-3 items-end pt-4 pb-2">
+                {/* 2nd Place */}
+                <div className="flex flex-col items-center">
+                  {top2 ? (
+                    <div className="flex flex-col items-center mb-2">
+                      <div className="w-10 h-10 rounded-full bg-slate-400 text-slate-950 flex items-center justify-center font-extrabold text-base shadow-lg mb-1">
+                        🥈
+                      </div>
+                      <div className="font-extrabold text-xs sm:text-sm text-slate-200 text-center truncate max-w-[100px]">
+                        {top2.name}
+                      </div>
+                      <div className="text-[11px] font-bold text-emerald-400 font-mono">{top2.score} pts</div>
                     </div>
-                    <div className="font-black text-base sm:text-lg text-amber-300 text-center truncate max-w-[140px]">
-                      {top1.name}
-                    </div>
-                    <div className="text-xs font-extrabold text-emerald-400">
-                      {top1.score} pts • {top1.accuracy}% Acc
-                    </div>
+                  ) : null}
+                  <div className="w-full h-28 sm:h-36 bg-gradient-to-t from-slate-800 to-slate-700 rounded-t-2xl border-t-4 border-slate-400 flex flex-col items-center justify-center shadow-2xl">
+                    <span className="font-black text-xl sm:text-2xl text-slate-300">2nd</span>
                   </div>
-                ) : null}
-                <div className="w-full h-40 sm:h-52 bg-gradient-to-t from-amber-600 via-amber-500 to-amber-400 rounded-t-3xl border-t-4 border-amber-200 flex flex-col items-center justify-center shadow-[0_0_40px_rgba(245,158,11,0.5)]">
-                  <span className="font-black text-3xl sm:text-5xl text-amber-950">1st</span>
                 </div>
-              </div>
 
-              {/* 3rd Place */}
-              <div className="flex flex-col items-center">
-                {top3 ? (
-                  <div className="flex flex-col items-center mb-2">
-                    <div className="w-12 h-12 rounded-full bg-amber-800 text-amber-200 flex items-center justify-center font-extrabold text-xl shadow-lg mb-1">
-                      🥉
+                {/* 1st Place GOLD */}
+                <div className="flex flex-col items-center -mt-6">
+                  {top1 ? (
+                    <div className="flex flex-col items-center mb-2 animate-bounce">
+                      <Crown size={30} className="text-amber-400 filter drop-shadow-[0_0_10px_rgba(245,158,11,0.9)]" />
+                      <div className="w-14 h-14 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center font-black text-2xl shadow-2xl border-2 border-amber-200 mb-1">
+                        🥇
+                      </div>
+                      <div className="font-black text-sm sm:text-base text-amber-300 text-center truncate max-w-[110px]">
+                        {top1.name}
+                      </div>
+                      <div className="text-[11px] font-extrabold text-emerald-400 font-mono">
+                        {top1.score} pts • {top1.accuracy}%
+                      </div>
                     </div>
-                    <div className="font-extrabold text-sm sm:text-base text-slate-200 text-center truncate max-w-[120px]">
-                      {top3.name}
-                    </div>
-                    <div className="text-xs font-bold text-emerald-400">{top3.score} pts</div>
+                  ) : null}
+                  <div className="w-full h-36 sm:h-48 bg-gradient-to-t from-amber-600 via-amber-500 to-amber-400 rounded-t-2xl border-t-4 border-amber-200 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(245,158,11,0.4)]">
+                    <span className="font-black text-2xl sm:text-4xl text-amber-950">1st</span>
                   </div>
-                ) : null}
-                <div className="w-full h-28 sm:h-32 bg-gradient-to-t from-amber-900 to-amber-800 rounded-t-3xl border-t-4 border-amber-700 flex flex-col items-center justify-center shadow-2xl">
-                  <span className="font-black text-xl sm:text-2xl text-amber-300">3rd</span>
+                </div>
+
+                {/* 3rd Place */}
+                <div className="flex flex-col items-center">
+                  {top3 ? (
+                    <div className="flex flex-col items-center mb-2">
+                      <div className="w-10 h-10 rounded-full bg-amber-800 text-amber-200 flex items-center justify-center font-extrabold text-base shadow-lg mb-1">
+                        🥉
+                      </div>
+                      <div className="font-extrabold text-xs sm:text-sm text-slate-200 text-center truncate max-w-[100px]">
+                        {top3.name}
+                      </div>
+                      <div className="text-[11px] font-bold text-emerald-400 font-mono">{top3.score} pts</div>
+                    </div>
+                  ) : null}
+                  <div className="w-full h-24 sm:h-28 bg-gradient-to-t from-amber-900 to-amber-800 rounded-t-2xl border-t-4 border-amber-700 flex flex-col items-center justify-center shadow-2xl">
+                    <span className="font-black text-lg sm:text-xl text-amber-300">3rd</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* LIVE LEADERBOARD STYLED TABLE */}
-            <div className="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 shadow-2xl backdrop-blur-xl space-y-4">
+            {/* RIGHT COLUMN: Full Live Leaderboard Rankings Table (xl:col-span-7) */}
+            <div className="xl:col-span-7 bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-4">
               <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
-                <h2 className="text-lg font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
-                  <Trophy size={20} className="text-amber-400" /> Live Leaderboard Rankings
+                <h2 className="text-base sm:text-lg font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
+                  <Trophy size={20} className="text-amber-400" /> All Players Live Rankings
                 </h2>
-                <span className="text-xs font-bold text-emerald-400 animate-pulse">
-                  ● Real-time Updates Active
+                <span className="text-xs font-bold text-emerald-400 animate-pulse flex items-center gap-1">
+                  ● Real-time
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm sm:text-base">
-                  <thead>
+              <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="sticky top-0 bg-slate-900 z-10">
                     <tr className="border-b border-purple-500/20 text-purple-300 font-bold uppercase text-xs tracking-wider">
                       <th className="pb-3 px-3">Rank</th>
                       <th className="pb-3 px-3">Player Name</th>
@@ -385,8 +395,8 @@ function HostContent() {
                       <th className="pb-3 px-3 text-center">Progress</th>
                       <th className="pb-3 px-3 text-right">Time</th>
                       <th className="pb-3 px-3 text-right">Score</th>
-                      <th className="pb-3 px-3 text-right">Accuracy</th>
-                      <th className="pb-3 px-3 text-right">Max Combo</th>
+                      <th className="pb-3 px-3 text-right">Acc</th>
+                      <th className="pb-3 px-3 text-right">Combo</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-purple-500/10">
@@ -397,24 +407,24 @@ function HostContent() {
                           idx === 0 ? 'bg-amber-500/10 font-bold' : ''
                         }`}
                       >
-                        <td className="py-3.5 px-3 font-extrabold text-slate-200">
+                        <td className="py-3 px-3 font-extrabold text-slate-200">
                           {idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}
                         </td>
-                        <td className="py-3.5 px-3 font-extrabold text-white">{player.name}</td>
-                        <td className="py-3.5 px-3 text-amber-300">{player.claimedCategory}</td>
-                        <td className="py-3.5 px-3 text-center font-bold text-emerald-300">
-                          {player.correctCount || 0} / 10
+                        <td className="py-3 px-3 font-extrabold text-white">{player.name}</td>
+                        <td className="py-3 px-3 text-amber-300 text-xs sm:text-sm">{player.claimedCategory}</td>
+                        <td className="py-3 px-3 text-center font-bold text-emerald-300 font-mono">
+                          {player.correctCount || 0}/10
                         </td>
-                        <td className="py-3.5 px-3 text-right font-mono font-bold text-cyan-300">
+                        <td className="py-3 px-3 text-right font-mono font-bold text-cyan-300">
                           {player.timeSec ? `${player.timeSec}s` : '-'}
                         </td>
-                        <td className="py-3.5 px-3 text-right font-mono font-black text-emerald-400 text-lg">
+                        <td className="py-3 px-3 text-right font-mono font-black text-emerald-400 text-base">
                           {player.score}
                         </td>
-                        <td className="py-3.5 px-3 text-right font-bold text-purple-300">
+                        <td className="py-3 px-3 text-right font-bold text-purple-300 font-mono">
                           {player.accuracy}%
                         </td>
-                        <td className="py-3.5 px-3 text-right font-extrabold text-amber-400">
+                        <td className="py-3 px-3 text-right font-extrabold text-amber-400">
                           {player.maxCombo >= 2 ? `🔥 ${player.maxCombo}x` : '-'}
                         </td>
                       </tr>
