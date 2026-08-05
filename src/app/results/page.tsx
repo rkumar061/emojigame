@@ -482,15 +482,15 @@ function ResultsContent() {
               </button>
             </div>
 
-            {/* 9:16 INSTAGRAM STORY CARD CANVAS (TECH-THEMED GAME ACHIEVEMENT CARD) */}
+            {/* 9:16 INSTAGRAM STORY CARD CANVAS (SYNCHRONIZED GAMIFIED HUD DASHBOARD) */}
             <div
               ref={storyCardRef}
-              className="w-[360px] h-[640px] rounded-[32px] bg-gradient-to-b from-[#16062d] via-[#090217] to-[#260747] border-2 border-purple-500/70 p-4.5 flex flex-col justify-between shadow-[0_0_60px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
+              className="w-[360px] h-[640px] rounded-[32px] bg-gradient-to-b from-[#180731] via-[#0a0319] to-[#28084a] border-2 border-purple-500/80 p-0 flex flex-col justify-between shadow-[0_0_60px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
               style={{ width: '360px', height: '640px', boxSizing: 'border-box' }}
             >
               {/* Tech Texture 1: Cyber Matrix Neon Grid */}
               <div
-                className="absolute inset-0 pointer-events-none opacity-30 z-0"
+                className="absolute inset-0 pointer-events-none opacity-25 z-0"
                 style={{
                   backgroundImage: `linear-gradient(to right, rgba(168, 85, 247, 0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(168, 85, 247, 0.15) 1px, transparent 1px)`,
                   backgroundSize: '24px 24px',
@@ -499,118 +499,114 @@ function ResultsContent() {
 
               {/* Tech Texture 2: Digital Circuit Dot Matrix */}
               <div
-                className="absolute inset-0 pointer-events-none opacity-25 z-0"
+                className="absolute inset-0 pointer-events-none opacity-20 z-0"
                 style={{
                   backgroundImage: `radial-gradient(circle, rgba(251, 191, 36, 0.35) 1px, transparent 1.2px)`,
                   backgroundSize: '16px 16px',
                 }}
               />
 
-              {/* Tech Texture 3: Cyberpunk HUD Corner Reticles */}
-              <div className="absolute top-2 left-4 text-purple-400/40 text-[9px] font-mono pointer-events-none select-none z-0">
-                +[SYS_CORE_01]
-              </div>
-              <div className="absolute top-2 right-4 text-amber-400/40 text-[9px] font-mono pointer-events-none select-none z-0">
-                [REC_STORY_PNG]
-              </div>
-              <div className="absolute bottom-2 left-4 text-emerald-400/40 text-[9px] font-mono pointer-events-none select-none z-0">
-                [HUD_V2.4]
-              </div>
-              <div className="absolute bottom-2 right-4 text-purple-400/40 text-[9px] font-mono pointer-events-none select-none z-0">
-                +[NEXORA_ARENA]+
-              </div>
-              {/* 1. Radiant Golden Header Banner for Grape Dawn Logo */}
-              <div className="w-full bg-gradient-to-r from-[#fffbeb] via-[#fde047] to-[#eab308] border border-amber-200 rounded-2xl py-2 px-3 flex items-center justify-between shadow-[0_4px_20px_rgba(253,224,71,0.35)] shrink-0 z-10">
+              {/* 1. Header: Radiant Golden Banner Flushed to Top Edge */}
+              <div
+                className="w-full h-[58px] px-4 py-2 flex items-center justify-between border-b border-amber-300/40 relative z-20 shrink-0 shadow-md"
+                style={{
+                  background: 'linear-gradient(135deg, #fffbeb 0%, #fef08a 35%, #fde047 70%, #eab308 100%)',
+                }}
+              >
                 <Image
                   src="/logo-horizental.png"
                   alt="Grape Dawn"
                   width={140}
-                  height={34}
-                  className="object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+                  height={36}
+                  className="object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]"
                   priority
                 />
-                <div className="px-3 py-1 rounded-full bg-[#180902] text-[9.5px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1 shadow border border-amber-400/60">
-                  <Zap size={10} className="text-amber-400 fill-amber-400" /> BNI ARENA
+
+                {/* Right Badge: BNI NEXORA */}
+                <div className="px-3 py-1 rounded-full bg-[#180902] text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1 shadow border border-amber-400/60">
+                  <Zap size={11} className="text-amber-400 fill-amber-400" /> BNI NEXORA
                 </div>
               </div>
 
-              {/* 2. Achievement Unlocked Emblem */}
-              <div className="z-10 flex items-center justify-center gap-1.5 text-[9.5px] font-black text-amber-300 uppercase tracking-widest bg-amber-500/10 border border-amber-400/40 rounded-full py-1 px-3.5 shadow shrink-0">
-                <Trophy size={12} className="text-amber-400" /> 🏆 ACHIEVEMENT UNLOCKED
-              </div>
-
-              {/* 3. Player Victory Profile Card */}
-              <div className="z-10 bg-gradient-to-b from-[#1c0a36] to-[#0e041d] border-2 border-purple-500/60 rounded-2xl p-3 flex flex-col items-center text-center space-y-1 shadow-[0_0_30px_rgba(168,85,247,0.3)] shrink-0">
-                <div className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 text-amber-950 font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(253,224,71,0.5)] flex items-center gap-1">
-                  {myRank === 1 ? '🥇 CHAMPION • RANK #1' : myRank === 2 ? '🥈 2ND PLACE • RANK #2' : myRank === 3 ? '🥉 3RD PLACE • RANK #3' : `RANK #${myRank} • VICTORY`}
+              {/* 2. Unified Single Integrated HUD Unit (Zero Dead Space) */}
+              <div className="mx-3.5 my-auto bg-[#120625]/90 border border-purple-500/50 rounded-2xl p-3.5 flex flex-col gap-3 shadow-2xl relative z-10 shrink-0">
+                {/* Row A: Achievement Header & Rank */}
+                <div className="flex items-center justify-between border-b border-purple-500/30 pb-2.5">
+                  <div className="text-[10px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
+                    <Trophy size={13} className="text-amber-400" /> ACHIEVEMENT UNLOCKED
+                  </div>
+                  <div className="px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 text-amber-950 font-black text-[11px] uppercase tracking-wider shadow-md">
+                    {myRank === 1 ? '🥇 CHAMPION' : myRank === 2 ? '🥈 2ND PLACE' : myRank === 3 ? '🥉 3RD PLACE' : `RANK #${myRank}`}
+                  </div>
                 </div>
 
-                <div>
-                  <div className="text-2xl font-black text-white tracking-wide drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">{myPlayer?.name || 'Player'}</div>
-                  <div className="text-xs text-amber-300 font-bold truncate max-w-[280px] pt-0.5">
+                {/* Row B: Player Profile */}
+                <div className="text-center space-y-0.5">
+                  <div className="text-2xl font-black text-white tracking-wide">{myPlayer?.name || 'Player'}</div>
+                  <div className="text-xs text-amber-300 font-bold truncate">
                     {myPlayer?.claimedCategory || claimedMember?.category || 'BNI Member'} • BNI Nexora
                   </div>
                 </div>
-              </div>
 
-              {/* 4. AAA Game Hero Score Showcase */}
-              <div className="z-10 bg-gradient-to-r from-[#170933] via-[#090217] to-[#170933] border-2 border-emerald-400/90 rounded-2xl p-2.5 flex flex-col items-center text-center space-y-0.5 shadow-[0_0_25px_rgba(34,197,94,0.4)] shrink-0">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                  TOTAL EVALUATION SCORE
-                </span>
-                <div className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.8)] tracking-tight">
-                  {myPlayer?.score || 0} <span className="text-xs font-sans text-emerald-300">PTS</span>
-                </div>
-                <div className="text-[10px] text-purple-200 font-bold">
-                  🎯 {myPlayer?.correctCount || 0}/10 Business Target Icons Identified
-                </div>
-              </div>
-
-              {/* 5. AAA Game HUD Analytics Cards */}
-              <div className="z-10 grid grid-cols-3 gap-2 text-center shrink-0">
-                <div className="bg-[#15072e] border-2 border-purple-500/40 rounded-xl p-2 flex flex-col items-center justify-center shadow-md">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                    <Clock size={9} className="text-amber-400" /> TIME
+                {/* Row C: Hero Score Display */}
+                <div className="bg-gradient-to-r from-[#1b083b] via-[#0a0219] to-[#1b083b] border border-emerald-400/80 rounded-xl p-2.5 text-center space-y-0.5 shadow-inner">
+                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                    TOTAL EVALUATION SCORE
                   </span>
-                  <span className="font-mono text-sm font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
+                  <div className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.8)] tracking-tight">
+                    {myPlayer?.score || 0} <span className="text-xs font-sans text-emerald-300">PTS</span>
+                  </div>
+                  <div className="text-[10px] text-purple-200 font-bold">
+                    🎯 {myPlayer?.correctCount || 0}/10 Business Target Icons Identified
+                  </div>
                 </div>
 
-                <div className="bg-[#15072e] border-2 border-purple-500/40 rounded-xl p-2 flex flex-col items-center justify-center shadow-md">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                    <Target size={9} className="text-cyan-300" /> ACCURACY
-                  </span>
-                  <span className="font-mono text-sm font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
+                {/* Row D: Synchronized 3-Column Stats Grid */}
+                <div className="grid grid-cols-3 gap-2 text-center bg-[#180733] border border-purple-500/40 rounded-xl p-2">
+                  <div className="flex flex-col items-center justify-center border-r border-purple-500/30 pr-1">
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                      <Clock size={9} className="text-amber-400" /> TIME
+                    </span>
+                    <span className="font-mono text-sm font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center border-r border-purple-500/30 px-1">
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                      <Target size={9} className="text-cyan-300" /> ACCURACY
+                    </span>
+                    <span className="font-mono text-sm font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
+                  </div>
+
+                  <div className="flex flex-col items-center justify-center pl-1">
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                      <Flame size={9} className="text-amber-400" /> COMBO
+                    </span>
+                    <span className="font-mono text-sm font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
+                  </div>
                 </div>
 
-                <div className="bg-[#15072e] border-2 border-purple-500/40 rounded-xl p-2 flex flex-col items-center justify-center shadow-md">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                    <Flame size={9} className="text-amber-400" /> COMBO
-                  </span>
-                  <span className="font-mono text-sm font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
+                {/* Row E: Integrated Motivation Banner */}
+                <div className="bg-gradient-to-r from-[#200940] via-[#100324] to-[#200940] border border-amber-400/50 rounded-xl p-2 text-center space-y-0.5">
+                  <div className="text-[9.5px] font-black text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1">
+                    <Sparkles size={11} className="text-amber-400 fill-amber-400" />
+                    {myRank === 1
+                      ? 'LEGENDARY REFERRAL VISIONARY'
+                      : myRank <= 3
+                      ? 'EPIC GIVERS GAIN CHAMPION'
+                      : 'SHARP REFERRAL MINDSET'}
+                  </div>
+                  <p className="text-[9px] text-purple-100 leading-snug font-medium">
+                    {myRank === 1
+                      ? '⚡ Spotting business targets in record time! Ready to pass quality referrals for BNI Nexora members!'
+                      : myRank <= 3
+                      ? '🤝 Connecting businesses through rapid visual recognition — empowering BNI Nexora referral growth!'
+                      : '🚀 Visual self-evaluation completed! Sharpening business networking skills with Grape Dawn & BNI Nexora!'}
+                  </p>
                 </div>
               </div>
 
-              {/* 6. AAA Game Quest Motivation Banner */}
-              <div className="z-10 bg-gradient-to-r from-[#200940] via-[#100324] to-[#200940] border border-amber-400/60 rounded-2xl p-2.5 text-center space-y-0.5 shadow-lg shrink-0">
-                <div className="text-[10px] font-black text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1">
-                  <Sparkles size={12} className="text-amber-400 fill-amber-400" />
-                  {myRank === 1
-                    ? 'LEGENDARY REFERRAL VISIONARY'
-                    : myRank <= 3
-                    ? 'EPIC GIVERS GAIN CHAMPION'
-                    : 'SHARP REFERRAL MINDSET'}
-                </div>
-                <p className="text-[9.5px] text-purple-100 leading-snug font-medium">
-                  {myRank === 1
-                    ? '⚡ Spotting business targets in record time! Ready to pass quality referrals for BNI Nexora members!'
-                    : myRank <= 3
-                    ? '🤝 Connecting businesses through rapid visual recognition — empowering BNI Nexora referral growth!'
-                    : '🚀 Visual self-evaluation completed! Sharpening business networking skills with Grape Dawn & BNI Nexora!'}
-                </p>
-              </div>
-
-              {/* 7. Footer Branding */}
-              <div className="z-10 flex items-center justify-between border-t border-purple-500/40 pt-2 text-[10px] shrink-0">
+              {/* 3. Footer Branding (Flushed to Bottom) */}
+              <div className="w-full px-4 py-2.5 flex items-center justify-between border-t border-purple-500/40 text-[10px] z-20 shrink-0 bg-[#0d041b]">
                 <div className="flex items-center gap-1 font-black tracking-wide text-white">
                   <span>🍇 GRAPE DAWN</span>
                   <span className="text-purple-400">• BNI NEXORA</span>
