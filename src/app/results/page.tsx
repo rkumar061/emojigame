@@ -518,10 +518,10 @@ function ResultsContent() {
                 }}
               />
 
-              {/* ENCLOSED INNER ACHIEVEMENT CARD (ZOOMED OUT PROTECTED CARD BOX) */}
-              <div className="w-[328px] h-[608px] rounded-[26px] bg-gradient-to-b from-[#1b083b] via-[#0e0422] to-[#250849] border-2 border-purple-500/80 shadow-2xl flex flex-col justify-between overflow-hidden relative z-10 select-none">
+              {/* ENCLOSED INNER ACHIEVEMENT CARD (COMPACT SNUG CARD - ZERO DEAD SPACE INSIDE) */}
+              <div className="w-[330px] my-auto rounded-[26px] bg-gradient-to-b from-[#1b083b] via-[#0e0422] to-[#250849] border-2 border-purple-500/80 shadow-2xl flex flex-col overflow-hidden relative z-10 select-none">
                 {/* 1. Header: Slanted Golden Logo Banner */}
-                <div className="w-full h-[58px] bg-[#0c0419] flex items-center justify-between border-b border-purple-500/40 relative shrink-0 overflow-hidden">
+                <div className="w-full h-[54px] bg-[#0c0419] flex items-center justify-between border-b border-purple-500/40 relative shrink-0 overflow-hidden">
                   {/* Slanted Golden Banner */}
                   <div
                     className="h-full px-4 py-2 flex items-center pr-8"
@@ -551,8 +551,8 @@ function ResultsContent() {
                   <Trophy size={12} className="text-amber-400" /> 🏆 ACHIEVEMENT UNLOCKED
                 </div>
 
-                {/* 3. Player Victory Profile Block */}
-                <div className="mx-3 my-auto bg-[#120625]/90 border border-purple-500/50 rounded-2xl p-3 flex flex-col gap-2.5 shadow-xl shrink-0">
+                {/* 3. Player Victory Profile Block (Snug & Compact) */}
+                <div className="mx-3 my-2.5 bg-[#120625]/90 border border-purple-500/50 rounded-2xl p-3 flex flex-col gap-2.5 shadow-xl shrink-0">
                   {/* Rank Badge & Name */}
                   <div className="flex flex-col items-center text-center space-y-1">
                     <div className="px-4 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 text-amber-950 font-black text-xs uppercase tracking-wider shadow-md">
