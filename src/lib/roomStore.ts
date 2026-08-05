@@ -177,6 +177,7 @@ export function claimMemberName(
     comboStreak: 0,
     maxCombo: 0,
     finished: false,
+    foundTargetValues: [],
   };
 
   notifyRoomListeners(cleanPin);

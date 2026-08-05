@@ -246,7 +246,7 @@ function ResultsContent() {
                   Your Visual Self-Evaluation <span className="px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 text-[9px] font-black">YOU</span>
                 </div>
                 <div className="text-lg sm:text-xl font-black text-white">{myPlayer.name}</div>
-                <div className="text-xs text-purple-200">Business Target: <span className="text-amber-300 font-bold">{myPlayer.claimedMemberName}</span></div>
+                <div className="text-xs text-purple-200">Category: <span className="text-amber-300 font-bold">{myPlayer.claimedCategory || claimedMember?.category || 'BNI Member'}</span></div>
               </div>
             </div>
 
@@ -288,7 +288,7 @@ function ResultsContent() {
                 <tr className="border-b border-purple-500/20 text-slate-400 font-semibold uppercase text-[10px]">
                   <th className="pb-3 px-2">Rank</th>
                   <th className="pb-3 px-2">Member</th>
-                  <th className="pb-3 px-2">Target Profile</th>
+                  <th className="pb-3 px-2">Business Category</th>
                   <th className="pb-3 px-2 text-center">Progress</th>
                   <th className="pb-3 px-2 text-right">Time</th>
                   <th className="pb-3 px-2 text-right">Score</th>
@@ -318,7 +318,7 @@ function ResultsContent() {
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-2 text-amber-300">{player.claimedMemberName}</td>
+                      <td className="py-3 px-2 text-amber-300">{player.claimedCategory || 'BNI Member'}</td>
                       <td className="py-3 px-2 text-center font-bold text-emerald-300 font-mono">
                         {player.correctCount || 0}/10
                       </td>
@@ -341,6 +341,126 @@ function ResultsContent() {
             </table>
           </div>
         </div>
+
+        {/* TARGET ICONS PERFORMANCE BREAKDOWN: SELECTED VS PENDING */}
+        {myPlayer && (
+          <div className="w-full bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-purple-500/20 pb-3">
+              <div>
+                <h2 className="text-sm font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
+                  <Target size={18} className="text-amber-400" /> Target Emojis Breakdown — {myPlayer.name} ({myPlayer.claimedCategory || claimedMember?.category || 'BNI Member'})
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Detailed view of your target business referral icons ({myPlayer.correctCount || 0} Matched • {Math.max(0, 10 - (myPlayer.correctCount || 0))} Pending)
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-1 rounded-xl">
+                  {myPlayer.correctCount || 0}/10 Complete
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Selected & Matched Target Emojis */}
+              <div className="bg-slate-950/80 border border-emerald-500/30 rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-black text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Check size={14} className="text-emerald-400" strokeWidth={3} /> Selected & Matched (
+                    {targetIcons.filter((t, idx) => {
+                      const foundValues = new Set(myPlayer?.foundTargetValues || []);
+                      return myPlayer?.foundTargetValues && myPlayer.foundTargetValues.length > 0
+                        ? foundValues.has(t.value)
+                        : idx < (myPlayer?.correctCount || 0);
+                    }).length}
+                    )
+                  </h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    MATCHED
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {targetIcons
+                    .filter((t, idx) => {
+                      const foundValues = new Set(myPlayer?.foundTargetValues || []);
+                      return myPlayer?.foundTargetValues && myPlayer.foundTargetValues.length > 0
+                        ? foundValues.has(t.value)
+                        : idx < (myPlayer?.correctCount || 0);
+                    })
+                    .map((icon) => (
+                      <div
+                        key={icon.id}
+                        className="p-2 bg-emerald-950/60 border border-emerald-400/50 rounded-xl flex flex-col items-center justify-center text-center space-y-1 relative shadow"
+                      >
+                        <IconRenderer icon={icon} size={24} className="text-emerald-300" />
+                        <span className="text-[10px] font-bold text-slate-200 truncate w-full">{icon.label || icon.value}</span>
+                        <span className="text-[9px] font-extrabold text-emerald-400 font-mono">MATCHED</span>
+                      </div>
+                    ))}
+                </div>
+
+                {targetIcons.filter((t, idx) => {
+                  const foundValues = new Set(myPlayer?.foundTargetValues || []);
+                  return myPlayer?.foundTargetValues && myPlayer.foundTargetValues.length > 0
+                    ? foundValues.has(t.value)
+                    : idx < (myPlayer?.correctCount || 0);
+                }).length === 0 && (
+                  <p className="text-xs text-slate-500 italic py-4 text-center">No target emojis matched yet.</p>
+                )}
+              </div>
+
+              {/* Targets Pending (Not Found Yet) */}
+              <div className="bg-slate-950/80 border border-amber-500/30 rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Clock size={14} className="text-amber-400" /> Targets Pending (
+                    {targetIcons.filter((t, idx) => {
+                      const foundValues = new Set(myPlayer?.foundTargetValues || []);
+                      return myPlayer?.foundTargetValues && myPlayer.foundTargetValues.length > 0
+                        ? !foundValues.has(t.value)
+                        : idx >= (myPlayer?.correctCount || 0);
+                    }).length}
+                    )
+                  </h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    PENDING
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                  {targetIcons
+                    .filter((t, idx) => {
+                      const foundValues = new Set(myPlayer?.foundTargetValues || []);
+                      return myPlayer?.foundTargetValues && myPlayer.foundTargetValues.length > 0
+                        ? !foundValues.has(t.value)
+                        : idx >= (myPlayer?.correctCount || 0);
+                    })
+                    .map((icon) => (
+                      <div
+                        key={icon.id}
+                        className="p-2 bg-purple-950/40 border border-purple-500/20 rounded-xl flex flex-col items-center justify-center text-center space-y-1 relative opacity-70"
+                      >
+                        <IconRenderer icon={icon} size={24} className="text-slate-400" />
+                        <span className="text-[10px] font-bold text-slate-300 truncate w-full">{icon.label || icon.value}</span>
+                        <span className="text-[9px] font-bold text-amber-400 font-mono">PENDING</span>
+                      </div>
+                    ))}
+                </div>
+
+                {targetIcons.filter((t, idx) => {
+                  const foundValues = new Set(myPlayer?.foundTargetValues || []);
+                  return myPlayer?.foundTargetValues && myPlayer.foundTargetValues.length > 0
+                    ? !foundValues.has(t.value)
+                    : idx >= (myPlayer?.correctCount || 0);
+                }).length === 0 && (
+                  <p className="text-xs text-emerald-400 font-bold py-4 text-center">🎉 All 10 Target Icons Successfully Found!</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* VERTICAL INSTAGRAM STORY STYLED SHARE MODAL */}
@@ -360,96 +480,106 @@ function ResultsContent() {
               </button>
             </div>
 
-            {/* 9:16 INSTAGRAM STORY CARD CANVAS (GAMIFIED GAME-THEME VICTORY CARD) */}
+            {/* 9:16 INSTAGRAM STORY CARD CANVAS (GAMIFIED STATS & BNI MOTIVATION CARD) */}
             <div
               ref={storyCardRef}
-              className="w-[310px] sm:w-[330px] aspect-[9/16] rounded-[28px] bg-gradient-to-b from-[#15062b] via-[#090315] to-[#250942] border-2 border-purple-500/60 p-4.5 flex flex-col justify-between shadow-[0_0_50px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
+              className="w-[310px] sm:w-[330px] aspect-[9/16] rounded-[30px] bg-gradient-to-b from-[#180731] via-[#0a0418] to-[#2b0a4e] border-2 border-purple-500/60 p-5 flex flex-col justify-between shadow-[0_0_50px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
             >
-              {/* Card Decorative Flares & Game Ambient Glow */}
-              <div className="absolute -top-16 -left-16 w-44 h-44 bg-purple-600/35 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-16 -right-16 w-44 h-44 bg-amber-500/35 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(168,85,247,0.2),transparent_75%)] pointer-events-none" />
+              {/* Decorative Flares & Ambient Game Glow */}
+              <div className="absolute -top-16 -left-16 w-48 h-48 bg-purple-600/35 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-amber-500/35 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(168,85,247,0.25),transparent_70%)] pointer-events-none" />
 
-              {/* 1. Game Header Banner */}
-              <div className="flex flex-col items-center text-center space-y-1 z-10">
+              {/* 1. Header Branding */}
+              <div className="flex flex-col items-center text-center space-y-1.5 z-10">
                 <Image
                   src="/logo-horizental.png"
                   alt="Grape Dawn"
-                  width={140}
-                  height={36}
+                  width={150}
+                  height={38}
                   className="object-contain filter drop-shadow-[0_0_12px_rgba(168,85,247,0.8)]"
                   priority
                 />
-                <div className="px-3 py-0.5 rounded-full bg-purple-950/80 border border-purple-500/40 text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1.5 shadow-md">
+                <div className="px-3 py-0.5 rounded-full bg-purple-950/90 border border-amber-400/40 text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1.5 shadow-md">
                   <Zap size={11} className="text-amber-400 fill-amber-400" /> BNI NEXORA ICON ARENA
                 </div>
               </div>
 
-              {/* 2. Player Victory Badge & Rank */}
-              <div className="z-10 bg-slate-950/90 border border-amber-400/50 rounded-2xl p-3 flex flex-col items-center text-center space-y-1.5 backdrop-blur-md shadow-[0_0_20px_rgba(245,158,11,0.25)]">
-                <div className="px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-amber-950 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1">
+              {/* 2. Player Rank & Profile Card */}
+              <div className="z-10 bg-slate-950/90 border border-amber-400/50 rounded-2xl p-3.5 flex flex-col items-center text-center space-y-1.5 backdrop-blur-md shadow-[0_0_25px_rgba(245,158,11,0.2)]">
+                <div className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-amber-950 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1">
                   {myRank === 1 ? '🥇 CHAMPION' : myRank === 2 ? '🥈 2ND PLACE' : myRank === 3 ? '🥉 3RD PLACE' : `RANK #${myRank}`}
                 </div>
 
                 <div>
-                  <div className="text-lg font-black text-white tracking-wide">{myPlayer?.name || 'Player'}</div>
+                  <div className="text-xl font-black text-white tracking-wide">{myPlayer?.name || 'Player'}</div>
                   <div className="text-xs text-amber-300 font-bold truncate max-w-[240px]">
-                    Target Profile: {myPlayer?.claimedMemberName || 'Member'}
+                    {myPlayer?.claimedCategory || claimedMember?.category || 'BNI Member'} • BNI Nexora
                   </div>
                 </div>
               </div>
 
-              {/* 3. Mini Game Target Grid Showcase (Matching Game Grid UI) */}
-              <div className="z-10 bg-slate-950/85 border border-purple-500/30 rounded-2xl p-2.5 space-y-1.5 backdrop-blur-md shadow-lg">
-                <div className="flex items-center justify-between text-[10px] font-black text-purple-300 uppercase tracking-wider px-1">
-                  <span className="flex items-center gap-1 text-emerald-300">
-                    <Check size={12} strokeWidth={3} className="text-emerald-400" /> Target Icons Matched
+              {/* 3. Hero Score Showcase */}
+              <div className="z-10 bg-gradient-to-br from-purple-950/90 via-slate-950/90 to-purple-950/90 border-2 border-emerald-400/60 rounded-2xl p-3.5 flex flex-col items-center text-center space-y-1 backdrop-blur-md shadow-[0_0_20px_rgba(34,197,94,0.3)]">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                  <Trophy size={12} className="text-amber-400" /> TOTAL EVALUATION SCORE
+                </span>
+                <div className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.6)]">
+                  {myPlayer?.score || 0} <span className="text-xs font-sans text-emerald-300">PTS</span>
+                </div>
+                <div className="text-[10px] text-purple-200 font-bold">
+                  {myPlayer?.correctCount || 0}/10 Business Targets Identified
+                </div>
+              </div>
+
+              {/* 4. Gamified HUD Analytics Cards (Time, Acc, Combo) */}
+              <div className="z-10 grid grid-cols-3 gap-2 text-center">
+                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-2 flex flex-col items-center justify-center shadow">
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                    <Clock size={9} className="text-amber-400" /> Time
                   </span>
-                  <span className="font-mono text-emerald-400">10 / 10</span>
+                  <span className="font-mono text-sm font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
                 </div>
 
-                <div className="grid grid-cols-5 gap-1.5">
-                  {targetIcons.slice(0, 10).map((icon, idx) => (
-                    <div
-                      key={icon.id || idx}
-                      className="aspect-square bg-emerald-950/90 border-2 border-emerald-400 rounded-xl flex items-center justify-center relative shadow-[0_0_12px_rgba(34,197,94,0.5)] p-0.5"
-                    >
-                      <IconRenderer icon={icon} size={18} className="text-emerald-300" />
-                      <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-[8px] shadow">
-                        ✓
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 4. Gamified HUD Analytics Cards (Matching Game HUD) */}
-              <div className="z-10 grid grid-cols-4 gap-1.5 text-center">
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-1.5 flex flex-col items-center justify-center">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Score</span>
-                  <span className="font-mono text-xs font-black text-emerald-400">{myPlayer?.score || 0}</span>
+                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-2 flex flex-col items-center justify-center shadow">
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                    <Target size={9} className="text-cyan-300" /> Accuracy
+                  </span>
+                  <span className="font-mono text-sm font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
                 </div>
 
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-1.5 flex flex-col items-center justify-center">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Time</span>
-                  <span className="font-mono text-xs font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
-                </div>
-
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-1.5 flex flex-col items-center justify-center">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Acc</span>
-                  <span className="font-mono text-xs font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
-                </div>
-
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-1.5 flex flex-col items-center justify-center">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">Combo</span>
-                  <span className="font-mono text-xs font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
+                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-2 flex flex-col items-center justify-center shadow">
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                    <Flame size={9} className="text-amber-400" /> Combo
+                  </span>
+                  <span className="font-mono text-sm font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
                 </div>
               </div>
 
-              {/* 5. Story Card Footer Game Branding */}
+              {/* 5. Positive BNI & Score Motivation Banner */}
+              <div className="z-10 bg-purple-950/80 border border-amber-400/40 rounded-2xl p-2.5 text-center space-y-0.5 backdrop-blur-md shadow-md">
+                <div className="text-[10px] font-black text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1">
+                  <Sparkles size={12} className="text-amber-400 fill-amber-400" />
+                  {myRank === 1
+                    ? 'MASTER REFERRAL VISIONARY'
+                    : myRank <= 3
+                    ? 'GIVERS GAIN CHAMPION'
+                    : 'SHARP REFERRAL MINDSET'}
+                </div>
+                <p className="text-[9.5px] text-slate-200 leading-snug font-medium">
+                  {myRank === 1
+                    ? '⚡ Spotting business targets in record time! Ready to pass quality referrals for BNI Nexora members!'
+                    : myRank <= 3
+                    ? '🤝 Connecting businesses through rapid visual recognition — empowering BNI Nexora referral growth!'
+                    : '🚀 Visual self-evaluation completed! Sharpening business networking skills with Grape Dawn & BNI Nexora!'}
+                </p>
+              </div>
+
+              {/* 6. Footer Branding */}
               <div className="z-10 flex items-center justify-between border-t border-purple-500/30 pt-2 text-[10px]">
                 <div className="flex items-center gap-1 font-black tracking-wide text-white">
                   <span>🍇 GRAPE DAWN</span>
+                  <span className="text-purple-400">• BNI NEXORA</span>
                 </div>
                 <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
               </div>

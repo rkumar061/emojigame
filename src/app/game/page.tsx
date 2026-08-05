@@ -29,6 +29,7 @@ function GameContent() {
   const [gameEnded, setGameEnded] = useState<boolean>(false);
   const [playerId, setPlayerId] = useState<string>('');
   const [playerName, setPlayerName] = useState<string>('');
+  const [foundTargetValues, setFoundTargetValues] = useState<string[]>([]);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const initialTimerRef = useRef<number>(30);
@@ -39,6 +40,7 @@ function GameContent() {
   const totalClicksRef = useRef<number>(0);
   const comboStreakRef = useRef<number>(0);
   const maxComboRef = useRef<number>(0);
+  const foundTargetValuesRef = useRef<string[]>([]);
 
   // Sync refs with state for atomic calculations
   useEffect(() => { timeLeftRef.current = timeLeft; }, [timeLeft]);
@@ -48,6 +50,7 @@ function GameContent() {
   useEffect(() => { totalClicksRef.current = totalClicks; }, [totalClicks]);
   useEffect(() => { comboStreakRef.current = comboStreak; }, [comboStreak]);
   useEffect(() => { maxComboRef.current = maxCombo; }, [maxCombo]);
+  useEffect(() => { foundTargetValuesRef.current = foundTargetValues; }, [foundTargetValues]);
 
   // Real-time live score update sender (pushes score changes to Host TV & Leaderboard)
   const sendLiveScoreUpdate = (stats: Record<string, any>) => {
@@ -217,6 +220,10 @@ function GameContent() {
         correctCountRef.current = newCorrectCount;
         setCorrectCount(newCorrectCount);
 
+        const newFoundTargets = [...foundTargetValuesRef.current, targetTile.icon.value];
+        foundTargetValuesRef.current = newFoundTargets;
+        setFoundTargetValues(newFoundTargets);
+
         // TIME-WEIGHTED SCORING:
         // Base points: 100
         // Speed Bonus: 5 points * remaining seconds
@@ -258,6 +265,7 @@ function GameContent() {
           maxCombo: newMaxCombo,
           timeSec: currentElapsedSec,
           finished: isFinished,
+          foundTargetValues: newFoundTargets,
         });
 
         if (isFinished) {
@@ -335,6 +343,7 @@ function GameContent() {
       maxCombo: actualMaxCombo,
       timeSec: actualElapsed,
       finished: true,
+      foundTargetValues: foundTargetValuesRef.current,
     };
 
     sendLiveScoreUpdate(finalStats);

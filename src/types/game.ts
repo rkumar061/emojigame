@@ -42,6 +42,7 @@ export interface PlayerProgress {
   comboStreak: number;
   maxCombo: number;
   finished: boolean;
+  foundTargetValues?: string[];
 }
 
 export interface RoomState {
