@@ -70,6 +70,15 @@ function HostContent() {
     await fetch('/api/room', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'SET_STATUS', pin, status: 'FINISHED' }),
+    });
+    fetchRoomState();
+  };
+
+  const handleResetToLobby = async () => {
+    await fetch('/api/room', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'SET_STATUS', pin, status: 'LOBBY' }),
     });
     fetchRoomState();
@@ -173,14 +182,29 @@ function HostContent() {
             <UserX size={16} /> <span className="hidden sm:inline">Reset Player</span>
           </button>
 
-          {/* START / STOP GAME CONTROL */}
-          {isPlaying ? (
+          {/* START / STOP / LOBBY CONTROL */}
+          {roomState?.status === 'PLAYING' ? (
             <button
               onClick={handleStopGame}
               className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-extrabold text-sm shadow-xl shadow-rose-950/50 transition transform active:scale-95"
             >
               <Square size={16} /> STOP GAME
             </button>
+          ) : roomState?.status === 'FINISHED' ? (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleResetToLobby}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 font-extrabold text-xs border border-purple-500/30 transition transform active:scale-95 shadow-lg"
+              >
+                <RotateCcw size={14} /> BACK TO LOBBY
+              </button>
+              <button
+                onClick={handleStartGame}
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-950/50 transition transform active:scale-95"
+              >
+                <Play size={16} /> START GAME
+              </button>
+            </div>
           ) : (
             <button
               onClick={handleStartGame}
