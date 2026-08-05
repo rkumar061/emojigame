@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   publisher: "Grape Dawn",
   applicationName: "Grape Dawn Quiz",
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "https://grapedawn.tech"
+    process.env.NEXT_PUBLIC_APP_URL || "https://game.grapedawn.tech"
   ),
   icons: {
     icon: "/favicon-32x32.png",

@@ -98,9 +98,9 @@ function HostContent() {
     fetchRoomState();
   };
 
-  const joinUrl = originUrl.includes('localhost')
+  const joinUrl = originUrl
     ? `${originUrl}/join?pin=${pin}`
-    : `https://grapedawn.tech/join?pin=${pin}`;
+    : `https://game.grapedawn.tech/join?pin=${pin}`;
 
   const handleCopyLink = () => {
     if (navigator.clipboard) {

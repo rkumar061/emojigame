@@ -106,7 +106,7 @@ function ResultsContent() {
       if (!forceDownload && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         await navigator.share({
           title: 'Grape Dawn Self-Evaluation Victory Card',
-          text: `🏆 I scored ${myPlayer?.score || 0} PTS in my Grape Dawn Visual Business Self-Evaluation! 🍇 Play at grapedawn.tech`,
+          text: `🏆 I scored ${myPlayer?.score || 0} PTS in my Grape Dawn Visual Business Self-Evaluation! 🍇 Play at game.grapedawn.tech`,
           files: [imageFile],
         });
         setIsGeneratingImage(false);
@@ -431,7 +431,7 @@ function ResultsContent() {
               {/* Story Card Footer Branding */}
               <div className="z-10 flex items-center justify-between border-t border-purple-500/30 pt-2 text-[10px] text-purple-300">
                 <span className="font-extrabold tracking-wide text-white">GRAPE DAWN</span>
-                <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
+                <span className="text-amber-300 font-mono font-bold">game.grapedawn.tech</span>
               </div>
             </div>
 
