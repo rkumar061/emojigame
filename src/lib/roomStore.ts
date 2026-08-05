@@ -218,6 +218,15 @@ export function updatePlayerScore(
     }
   }
 
+  // Auto-finish room when EVERY active player in the room has completed
+  if (room.status === 'PLAYING') {
+    const playersArr = Object.values(room.players);
+    if (playersArr.length > 0 && playersArr.every((p) => p.finished)) {
+      room.status = 'FINISHED';
+      room.endedAt = Date.now();
+    }
+  }
+
   notifyRoomListeners(cleanPin);
   return room;
 }

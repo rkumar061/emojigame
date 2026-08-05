@@ -42,6 +42,8 @@ function ResultsContent() {
   }, []);
 
   // Real-time Global Room Status & Kick Listener
+  const entryTimeRef = useRef<number>(Date.now());
+
   useEffect(() => {
     if (!roomState) return;
 
@@ -55,14 +57,14 @@ function ResultsContent() {
       return;
     }
 
-    // 2. Host started new game while player was on results screen!
-    if (roomState.status === 'PLAYING') {
+    // 2. Host reset room to lobby or started a new round
+    if (roomState.status === 'LOBBY') {
       router.push(`/lobby?pin=${pin}`);
       return;
     }
 
-    // 3. Host reset room to lobby
-    if (roomState.status === 'LOBBY') {
+    // 3. If host started a brand new game round while player was on results screen
+    if (roomState.status === 'PLAYING' && roomState.startedAt && roomState.startedAt > entryTimeRef.current + 5000) {
       router.push(`/lobby?pin=${pin}`);
       return;
     }
@@ -154,9 +156,15 @@ function ResultsContent() {
       {/* Main Content */}
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col items-center z-10 space-y-8 pb-12">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
-            <Trophy size={14} className="text-amber-400" /> Visual Self-Evaluation Standings
-          </div>
+          {roomState?.status === 'PLAYING' ? (
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold uppercase tracking-wider animate-pulse">
+              <Loader2 size={14} className="animate-spin text-amber-400" /> Holding in Leaderboard — Other members are still playing...
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
+              <Trophy size={14} className="text-amber-400" /> Visual Self-Evaluation Standings
+            </div>
+          )}
           <h1 className="text-3xl sm:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-purple-200 to-pink-300">
             Self-Evaluation Champions!
           </h1>

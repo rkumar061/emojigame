@@ -339,13 +339,6 @@ function GameContent() {
 
     sendLiveScoreUpdate(finalStats);
 
-    // Set room status to FINISHED so room is stopped and players stay on Leaderboard
-    fetch('/api/room', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'SET_STATUS', pin, status: 'FINISHED' }),
-    }).catch(() => {});
-
     setTimeout(() => {
       router.push(`/results?pin=${pin}`);
     }, 1200);
