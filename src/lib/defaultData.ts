@@ -8438,6 +8438,56 @@ const RAW_INITIAL_MEMBERS: MemberProfile[] = [
         "label": "Peach"
       }
     ]
+  },
+  {
+    "id": "m35",
+    "name": "Pujan",
+    "category": "Student & Gamer",
+    "company": "Gaming & Esports",
+    "targetIcons": [
+      { "id": "t35_1", "type": "emoji", "value": "🎮", "label": "Video Game Console" },
+      { "id": "t35_2", "type": "emoji", "value": "🕹️", "label": "Joystick" },
+      { "id": "t35_3", "type": "emoji", "value": "🎧", "label": "Gaming Headphones" },
+      { "id": "t35_4", "type": "emoji", "value": "👾", "label": "Alien Arcade Monster" },
+      { "id": "t35_5", "type": "emoji", "value": "🎓", "label": "Student Graduation Cap" },
+      { "id": "t35_6", "type": "emoji", "value": "💻", "label": "Laptop / Gaming PC" },
+      { "id": "t35_7", "type": "emoji", "value": "🏆", "label": "Esports Trophy" },
+      { "id": "t35_8", "type": "emoji", "value": "🎯", "label": "Aim Target" },
+      { "id": "t35_9", "type": "emoji", "value": "⚡", "label": "Power Energy" },
+      { "id": "t35_10", "type": "emoji", "value": "📚", "label": "Study Books" }
+    ],
+    "distractorIcons": [
+      { "id": "dist_35_1", "type": "emoji", "value": "🌭", "label": "Hotdog" },
+      { "id": "dist_35_2", "type": "emoji", "value": "🍕", "label": "Pizza" },
+      { "id": "dist_35_3", "type": "emoji", "value": "🍔", "label": "Burger" },
+      { "id": "dist_35_4", "type": "emoji", "value": "🍿", "label": "Popcorn" },
+      { "id": "dist_35_5", "type": "emoji", "value": "🥨", "label": "Pretzel" },
+      { "id": "dist_35_6", "type": "emoji", "value": "🌮", "label": "Taco" },
+      { "id": "dist_35_7", "type": "emoji", "value": "🍩", "label": "Donut" },
+      { "id": "dist_35_8", "type": "emoji", "value": "🍦", "label": "Ice Cream" },
+      { "id": "dist_35_9", "type": "emoji", "value": "⚽", "label": "Soccer" },
+      { "id": "dist_35_10", "type": "emoji", "value": "🏀", "label": "Basketball" },
+      { "id": "dist_35_11", "type": "emoji", "value": "🏈", "label": "Football" },
+      { "id": "dist_35_12", "type": "emoji", "value": "⚾", "label": "Baseball" },
+      { "id": "dist_35_13", "type": "emoji", "value": "🎾", "label": "Tennis" },
+      { "id": "dist_35_14", "type": "emoji", "value": "🏐", "label": "Volleyball" },
+      { "id": "dist_35_15", "type": "emoji", "value": "🎳", "label": "Bowling" },
+      { "id": "dist_35_16", "type": "emoji", "value": "🛹", "label": "Skateboard" },
+      { "id": "dist_35_17", "type": "emoji", "value": "🚗", "label": "Car" },
+      { "id": "dist_35_18", "type": "emoji", "value": "✈️", "label": "Airplane" },
+      { "id": "dist_35_19", "type": "emoji", "value": "🚀", "label": "Rocket" },
+      { "id": "dist_35_20", "type": "emoji", "value": "⛵", "label": "Sailboat" },
+      { "id": "dist_35_21", "type": "emoji", "value": "🐶", "label": "Dog" },
+      { "id": "dist_35_22", "type": "emoji", "value": "🐱", "label": "Cat" },
+      { "id": "dist_35_23", "type": "emoji", "value": "🦁", "label": "Lion" },
+      { "id": "dist_35_24", "type": "emoji", "value": "🐯", "label": "Tiger" },
+      { "id": "dist_35_25", "type": "emoji", "value": "🐻", "label": "Bear" },
+      { "id": "dist_35_26", "type": "emoji", "value": "🐼", "label": "Panda" },
+      { "id": "dist_35_27", "type": "emoji", "value": "🦊", "label": "Fox" },
+      { "id": "dist_35_28", "type": "emoji", "value": "🐰", "label": "Rabbit" },
+      { "id": "dist_35_29", "type": "emoji", "value": "🍎", "label": "Apple" },
+      { "id": "dist_35_30", "type": "emoji", "value": "🍉", "label": "Watermelon" }
+    ]
   }
 ];
 
