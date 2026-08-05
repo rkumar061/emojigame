@@ -100,9 +100,11 @@ function ResultsContent() {
 
     try {
       const blob = await toBlob(storyCardRef.current, {
-        pixelRatio: 2,
+        width: 360,
+        height: 640,
+        pixelRatio: 3,
         cacheBust: true,
-        quality: 0.95,
+        quality: 0.98,
       });
 
       if (!blob) throw new Error('Failed to generate image blob');
@@ -480,84 +482,80 @@ function ResultsContent() {
               </button>
             </div>
 
-            {/* 9:16 INSTAGRAM STORY CARD CANVAS (GAMIFIED STATS & BNI MOTIVATION CARD) */}
+            {/* 9:16 INSTAGRAM STORY CARD CANVAS (FIXED 360x640px PIXEL-PERFECT PNG CAPTURE) */}
             <div
               ref={storyCardRef}
-              className="w-[310px] sm:w-[330px] aspect-[9/16] rounded-[30px] bg-gradient-to-b from-[#180731] via-[#0a0418] to-[#2b0a4e] border-2 border-purple-500/60 p-5 flex flex-col justify-between shadow-[0_0_50px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
+              className="w-[360px] h-[640px] rounded-[32px] bg-gradient-to-b from-[#3d2405] via-[#1c0e02] to-[#482a06] border-2 border-amber-400 p-5 flex flex-col justify-between shadow-[0_0_60px_rgba(245,158,11,0.5)] relative overflow-hidden select-none"
+              style={{ width: '360px', height: '640px', boxSizing: 'border-box' }}
             >
-              {/* Decorative Flares & Ambient Game Glow */}
-              <div className="absolute -top-16 -left-16 w-48 h-48 bg-purple-600/35 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-amber-500/35 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_15%,rgba(168,85,247,0.25),transparent_70%)] pointer-events-none" />
-
               {/* 1. Header Branding */}
-              <div className="flex flex-col items-center text-center space-y-1.5 z-10">
+              <div className="flex flex-col items-center text-center space-y-1.5 z-10 shrink-0">
                 <Image
                   src="/logo-horizental.png"
                   alt="Grape Dawn"
-                  width={150}
+                  width={155}
                   height={38}
-                  className="object-contain filter drop-shadow-[0_0_12px_rgba(168,85,247,0.8)]"
+                  className="object-contain filter drop-shadow-[0_0_12px_rgba(245,158,11,0.8)]"
                   priority
                 />
-                <div className="px-3 py-0.5 rounded-full bg-purple-950/90 border border-amber-400/40 text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1.5 shadow-md">
+                <div className="px-3.5 py-1 rounded-full bg-[#2a1703] border border-amber-400/60 text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1.5 shadow-md">
                   <Zap size={11} className="text-amber-400 fill-amber-400" /> BNI NEXORA ICON ARENA
                 </div>
               </div>
 
               {/* 2. Player Rank & Profile Card */}
-              <div className="z-10 bg-slate-950/90 border border-amber-400/50 rounded-2xl p-3.5 flex flex-col items-center text-center space-y-1.5 backdrop-blur-md shadow-[0_0_25px_rgba(245,158,11,0.2)]">
-                <div className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-amber-950 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-1">
+              <div className="z-10 bg-[#120801] border border-amber-400/70 rounded-2xl p-3 flex flex-col items-center text-center space-y-1 shadow-lg shrink-0">
+                <div className="px-4 py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-amber-950 font-black text-xs uppercase tracking-wider shadow-md flex items-center gap-1">
                   {myRank === 1 ? '🥇 CHAMPION' : myRank === 2 ? '🥈 2ND PLACE' : myRank === 3 ? '🥉 3RD PLACE' : `RANK #${myRank}`}
                 </div>
 
                 <div>
                   <div className="text-xl font-black text-white tracking-wide">{myPlayer?.name || 'Player'}</div>
-                  <div className="text-xs text-amber-300 font-bold truncate max-w-[240px]">
+                  <div className="text-xs text-amber-300 font-bold truncate max-w-[280px]">
                     {myPlayer?.claimedCategory || claimedMember?.category || 'BNI Member'} • BNI Nexora
                   </div>
                 </div>
               </div>
 
               {/* 3. Hero Score Showcase */}
-              <div className="z-10 bg-gradient-to-br from-purple-950/90 via-slate-950/90 to-purple-950/90 border-2 border-emerald-400/60 rounded-2xl p-3.5 flex flex-col items-center text-center space-y-1 backdrop-blur-md shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+              <div className="z-10 bg-gradient-to-br from-[#2a1703] via-[#140801] to-[#2a1703] border-2 border-amber-400/80 rounded-2xl p-3 flex flex-col items-center text-center space-y-1 shadow-xl shrink-0">
+                <span className="text-[9px] font-black text-amber-300/80 uppercase tracking-widest flex items-center gap-1">
                   <Trophy size={12} className="text-amber-400" /> TOTAL EVALUATION SCORE
                 </span>
-                <div className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_10px_rgba(34,197,94,0.6)]">
-                  {myPlayer?.score || 0} <span className="text-xs font-sans text-emerald-300">PTS</span>
+                <div className="text-3xl font-black font-mono text-amber-300 drop-shadow-[0_0_12px_rgba(245,158,11,0.8)]">
+                  {myPlayer?.score || 0} <span className="text-xs font-sans text-amber-200">PTS</span>
                 </div>
-                <div className="text-[10px] text-purple-200 font-bold">
+                <div className="text-[10px] text-amber-200/90 font-bold">
                   {myPlayer?.correctCount || 0}/10 Business Targets Identified
                 </div>
               </div>
 
               {/* 4. Gamified HUD Analytics Cards (Time, Acc, Combo) */}
-              <div className="z-10 grid grid-cols-3 gap-2 text-center">
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-2 flex flex-col items-center justify-center shadow">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+              <div className="z-10 grid grid-cols-3 gap-2 text-center shrink-0">
+                <div className="bg-[#241302] border border-amber-500/50 rounded-xl p-2 flex flex-col items-center justify-center shadow-md">
+                  <span className="text-[8px] font-bold text-amber-300/80 uppercase tracking-wider flex items-center gap-0.5">
                     <Clock size={9} className="text-amber-400" /> Time
                   </span>
                   <span className="font-mono text-sm font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
                 </div>
 
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-2 flex flex-col items-center justify-center shadow">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                    <Target size={9} className="text-cyan-300" /> Accuracy
+                <div className="bg-[#241302] border border-amber-500/50 rounded-xl p-2 flex flex-col items-center justify-center shadow-md">
+                  <span className="text-[8px] font-bold text-amber-300/80 uppercase tracking-wider flex items-center gap-0.5">
+                    <Target size={9} className="text-amber-300" /> Accuracy
                   </span>
-                  <span className="font-mono text-sm font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
+                  <span className="font-mono text-sm font-black text-emerald-400">{myPlayer?.accuracy || 100}%</span>
                 </div>
 
-                <div className="bg-purple-950/90 border border-purple-500/30 rounded-xl p-2 flex flex-col items-center justify-center shadow">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                <div className="bg-[#241302] border border-amber-500/50 rounded-xl p-2 flex flex-col items-center justify-center shadow-md">
+                  <span className="text-[8px] font-bold text-amber-300/80 uppercase tracking-wider flex items-center gap-0.5">
                     <Flame size={9} className="text-amber-400" /> Combo
                   </span>
                   <span className="font-mono text-sm font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
                 </div>
               </div>
 
-              {/* 5. Positive BNI & Score Motivation Banner */}
-              <div className="z-10 bg-purple-950/80 border border-amber-400/40 rounded-2xl p-2.5 text-center space-y-0.5 backdrop-blur-md shadow-md">
+              {/* 5. Positive BNI Motivation Banner */}
+              <div className="z-10 bg-[#251402] border border-amber-400/60 rounded-2xl p-2.5 text-center space-y-0.5 shadow-md shrink-0">
                 <div className="text-[10px] font-black text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1">
                   <Sparkles size={12} className="text-amber-400 fill-amber-400" />
                   {myRank === 1
@@ -566,7 +564,7 @@ function ResultsContent() {
                     ? 'GIVERS GAIN CHAMPION'
                     : 'SHARP REFERRAL MINDSET'}
                 </div>
-                <p className="text-[9.5px] text-slate-200 leading-snug font-medium">
+                <p className="text-[9.5px] text-amber-100/90 leading-snug font-medium">
                   {myRank === 1
                     ? '⚡ Spotting business targets in record time! Ready to pass quality referrals for BNI Nexora members!'
                     : myRank <= 3
@@ -576,10 +574,10 @@ function ResultsContent() {
               </div>
 
               {/* 6. Footer Branding */}
-              <div className="z-10 flex items-center justify-between border-t border-purple-500/30 pt-2 text-[10px]">
+              <div className="z-10 flex items-center justify-between border-t border-amber-500/40 pt-2 text-[10px] shrink-0">
                 <div className="flex items-center gap-1 font-black tracking-wide text-white">
                   <span>🍇 GRAPE DAWN</span>
-                  <span className="text-purple-400">• BNI NEXORA</span>
+                  <span className="text-amber-400/80">• BNI NEXORA</span>
                 </div>
                 <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
               </div>
