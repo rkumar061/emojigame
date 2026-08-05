@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Flame, Check, X, Clock, Trophy, Target, Sparkles, CheckCircle2 } from 'lucide-react';
-import { RoomState, MemberProfile, IconGridTile } from '@/types/game';
-import { INITIAL_MEMBERS, DEFAULT_DISTRACTOR_POOL } from '@/lib/defaultData';
+import { RoomState, MemberProfile, IconGridTile, IconItem } from '@/types/game';
+import { INITIAL_MEMBERS, DEFAULT_DISTRACTOR_POOL, MASTER_DISTRACTOR_ITEMS } from '@/lib/defaultData';
 import { IconRenderer } from '@/components/IconRenderer';
 import { sound } from '@/lib/sound';
 import { useRoomStore } from '@/lib/useRoomStore';
@@ -142,20 +142,34 @@ function GameContent() {
       clicked: false,
     }));
 
-    // Fill distractors up to 30 items, filtering out any icon that matches target values or labels
+    // Fill distractors up to EXACTLY 30 unique items, filtering out any icon that matches target values or labels
     const targetValues = new Set(targetMember.targetIcons.map((t) => t.value.toLowerCase()));
     const targetLabels = new Set(targetMember.targetIcons.map((t) => (t.label || '').toLowerCase()));
 
-    const rawPool =
-      targetMember.distractorIcons.length >= 30
-        ? targetMember.distractorIcons
-        : [...targetMember.distractorIcons, ...DEFAULT_DISTRACTOR_POOL];
+    const candidatePool = [
+      ...(targetMember.distractorIcons || []),
+      ...MASTER_DISTRACTOR_ITEMS,
+    ];
 
-    const filteredPool = rawPool.filter(
-      (d) => !targetValues.has(d.value.toLowerCase()) && !targetLabels.has((d.label || '').toLowerCase())
-    );
+    const seenValues = new Set<string>();
+    const validDistractors: IconItem[] = [];
 
-    const distractors = filteredPool.slice(0, 30).map((icon, idx) => ({
+    for (const d of candidatePool) {
+      if (validDistractors.length >= 30) break;
+      const val = d.value.toLowerCase();
+      const lbl = (d.label || '').toLowerCase();
+
+      if (
+        !targetValues.has(val) &&
+        !targetLabels.has(lbl) &&
+        !seenValues.has(val)
+      ) {
+        seenValues.add(val);
+        validDistractors.push(d);
+      }
+    }
+
+    const distractors = validDistractors.slice(0, 30).map((icon, idx) => ({
       id: `distractor_${idx}_${Date.now()}`,
       icon,
       isTarget: false,

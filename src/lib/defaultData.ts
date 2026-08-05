@@ -450,184 +450,36 @@ const RAW_INITIAL_MEMBERS: MemberProfile[] = [
       }
     ],
     "distractorIcons": [
-      {
-        "id": "dist_2_1",
-        "type": "emoji",
-        "value": "🌭",
-        "label": "Hotdog"
-      },
-      {
-        "id": "dist_2_2",
-        "type": "emoji",
-        "value": "🍿",
-        "label": "Popcorn"
-      },
-      {
-        "id": "dist_2_3",
-        "type": "emoji",
-        "value": "🥨",
-        "label": "Pretzel"
-      },
-      {
-        "id": "dist_2_4",
-        "type": "emoji",
-        "value": "🌮",
-        "label": "Taco"
-      },
-      {
-        "id": "dist_2_5",
-        "type": "emoji",
-        "value": "🍩",
-        "label": "Donut"
-      },
-      {
-        "id": "dist_2_6",
-        "type": "emoji",
-        "value": "🍦",
-        "label": "Ice Cream"
-      },
-      {
-        "id": "dist_2_7",
-        "type": "emoji",
-        "value": "🧁",
-        "label": "Cupcake"
-      },
-      {
-        "id": "dist_2_8",
-        "type": "emoji",
-        "value": "⚽",
-        "label": "Soccer"
-      },
-      {
-        "id": "dist_2_9",
-        "type": "emoji",
-        "value": "🏀",
-        "label": "Basketball"
-      },
-      {
-        "id": "dist_2_10",
-        "type": "emoji",
-        "value": "🏈",
-        "label": "Football"
-      },
-      {
-        "id": "dist_2_11",
-        "type": "emoji",
-        "value": "⚾",
-        "label": "Baseball"
-      },
-      {
-        "id": "dist_2_12",
-        "type": "emoji",
-        "value": "🎾",
-        "label": "Tennis"
-      },
-      {
-        "id": "dist_2_13",
-        "type": "emoji",
-        "value": "🏐",
-        "label": "Volleyball"
-      },
-      {
-        "id": "dist_2_14",
-        "type": "emoji",
-        "value": "🎳",
-        "label": "Bowling"
-      },
-      {
-        "id": "dist_2_15",
-        "type": "emoji",
-        "value": "🏓",
-        "label": "Ping Pong"
-      },
-      {
-        "id": "dist_2_16",
-        "type": "emoji",
-        "value": "🛹",
-        "label": "Skateboard"
-      },
-      {
-        "id": "dist_2_18",
-        "type": "emoji",
-        "value": "🎲",
-        "label": "Dice"
-      },
-      {
-        "id": "dist_2_21",
-        "type": "emoji",
-        "value": "🪁",
-        "label": "Kite"
-      },
-      {
-        "id": "dist_2_22",
-        "type": "emoji",
-        "value": "🪀",
-        "label": "Yo-Yo"
-      },
-      {
-        "id": "dist_2_23",
-        "type": "emoji",
-        "value": "🐶",
-        "label": "Dog"
-      },
-      {
-        "id": "dist_2_24",
-        "type": "emoji",
-        "value": "🐱",
-        "label": "Cat"
-      },
-      {
-        "id": "dist_2_25",
-        "type": "emoji",
-        "value": "🦁",
-        "label": "Lion"
-      },
-      {
-        "id": "dist_2_26",
-        "type": "emoji",
-        "value": "🐯",
-        "label": "Tiger"
-      },
-      {
-        "id": "dist_2_27",
-        "type": "emoji",
-        "value": "🐻",
-        "label": "Bear"
-      },
-      {
-        "id": "dist_2_28",
-        "type": "emoji",
-        "value": "🐼",
-        "label": "Panda"
-      },
-      {
-        "id": "dist_2_29",
-        "type": "emoji",
-        "value": "🦊",
-        "label": "Fox"
-      },
-      {
-        "id": "dist_2_30",
-        "type": "emoji",
-        "value": "🐰",
-        "label": "Rabbit"
-      },
-      {
-        "id": "emoji_1785921215961_13",
-        "type": "emoji",
-        "value": "🦷"
-      },
-      {
-        "id": "emoji_1785921219671_15",
-        "type": "emoji",
-        "value": "🪥"
-      },
-      {
-        "id": "lucide_1785921234339_20",
-        "type": "lucide",
-        "value": "Syringe",
-        "label": "Syringe"
-      }
+      { "id": "dist_2_1", "type": "emoji", "value": "🌭", "label": "Hotdog" },
+      { "id": "dist_2_2", "type": "emoji", "value": "🍿", "label": "Popcorn" },
+      { "id": "dist_2_3", "type": "emoji", "value": "🥨", "label": "Pretzel" },
+      { "id": "dist_2_4", "type": "emoji", "value": "🌮", "label": "Taco" },
+      { "id": "dist_2_5", "type": "emoji", "value": "🍩", "label": "Donut" },
+      { "id": "dist_2_6", "type": "emoji", "value": "🍦", "label": "Ice Cream" },
+      { "id": "dist_2_7", "type": "emoji", "value": "🧁", "label": "Cupcake" },
+      { "id": "dist_2_8", "type": "emoji", "value": "⚽", "label": "Soccer" },
+      { "id": "dist_2_9", "type": "emoji", "value": "🏀", "label": "Basketball" },
+      { "id": "dist_2_10", "type": "emoji", "value": "🏈", "label": "Football" },
+      { "id": "dist_2_11", "type": "emoji", "value": "⚾", "label": "Baseball" },
+      { "id": "dist_2_12", "type": "emoji", "value": "🎾", "label": "Tennis" },
+      { "id": "dist_2_13", "type": "emoji", "value": "🏐", "label": "Volleyball" },
+      { "id": "dist_2_14", "type": "emoji", "value": "🎳", "label": "Bowling" },
+      { "id": "dist_2_15", "type": "emoji", "value": "🏓", "label": "Ping Pong" },
+      { "id": "dist_2_16", "type": "emoji", "value": "🛹", "label": "Skateboard" },
+      { "id": "dist_2_17", "type": "emoji", "value": "🎲", "label": "Dice" },
+      { "id": "dist_2_18", "type": "emoji", "value": "🪁", "label": "Kite" },
+      { "id": "dist_2_19", "type": "emoji", "value": "🪀", "label": "Yo-Yo" },
+      { "id": "dist_2_20", "type": "emoji", "value": "🐶", "label": "Dog" },
+      { "id": "dist_2_21", "type": "emoji", "value": "🐱", "label": "Cat" },
+      { "id": "dist_2_22", "type": "emoji", "value": "🦁", "label": "Lion" },
+      { "id": "dist_2_23", "type": "emoji", "value": "🐯", "label": "Tiger" },
+      { "id": "dist_2_24", "type": "emoji", "value": "🐻", "label": "Bear" },
+      { "id": "dist_2_25", "type": "emoji", "value": "🐼", "label": "Panda" },
+      { "id": "dist_2_26", "type": "emoji", "value": "🦊", "label": "Fox" },
+      { "id": "dist_2_27", "type": "emoji", "value": "🐰", "label": "Rabbit" },
+      { "id": "dist_2_28", "type": "emoji", "value": "🚀", "label": "Rocket" },
+      { "id": "dist_2_29", "type": "emoji", "value": "🛸", "label": "UFO" },
+      { "id": "dist_2_30", "type": "emoji", "value": "🎸", "label": "Guitar" }
     ]
   },
   {
