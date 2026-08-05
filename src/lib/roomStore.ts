@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { RoomState, MemberProfile, GameConfig } from '@/types/game';
 import { INITIAL_MEMBERS } from './defaultData';
 
@@ -7,6 +9,35 @@ const rooms: Record<string, RoomState> = {};
 // Listener registry for real-time WebSockets and SSE push streams
 type RoomListener = (room: RoomState) => void;
 const roomListeners: Record<string, Set<RoomListener>> = {};
+
+const STORE_PATH = path.join(process.cwd(), 'data', 'members_store.json');
+
+function loadPersistedMembers(): MemberProfile[] {
+  try {
+    if (fs.existsSync(STORE_PATH)) {
+      const data = fs.readFileSync(STORE_PATH, 'utf8');
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch {
+    // ignore load errors
+  }
+  return JSON.parse(JSON.stringify(INITIAL_MEMBERS));
+}
+
+function savePersistedMembers(members: MemberProfile[]): void {
+  try {
+    const dir = path.dirname(STORE_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(STORE_PATH, JSON.stringify(members, null, 2), 'utf8');
+  } catch {
+    // ignore save errors
+  }
+}
 
 export function subscribeRoom(pin: string, listener: RoomListener): () => void {
   const cleanPin = pin.trim().toUpperCase();
@@ -49,7 +80,7 @@ export function createDefaultRoom(pin = 'GD8492'): RoomState {
     pin,
     status: 'LOBBY',
     config: defaultConfig,
-    members: JSON.parse(JSON.stringify(INITIAL_MEMBERS)),
+    members: loadPersistedMembers(),
     players: {},
     countdownSeconds: 3,
   };
@@ -96,6 +127,7 @@ export function updateRoomMembers(pin: string, members: MemberProfile[]): RoomSt
   const room = getRoom(cleanPin);
   if (!room) return undefined;
   room.members = members;
+  savePersistedMembers(members);
   notifyRoomListeners(cleanPin);
   return room;
 }
