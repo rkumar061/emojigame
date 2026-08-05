@@ -98,7 +98,9 @@ function HostContent() {
     fetchRoomState();
   };
 
-  const joinUrl = `${originUrl}/join?pin=${pin}`;
+  const joinUrl = originUrl.includes('localhost')
+    ? `${originUrl}/join?pin=${pin}`
+    : `https://grapedawn.tech/join?pin=${pin}`;
 
   const handleCopyLink = () => {
     if (navigator.clipboard) {
@@ -378,7 +380,7 @@ function HostContent() {
             <div className="xl:col-span-7 bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-4">
               <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
                 <h2 className="text-base sm:text-lg font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
-                  <Trophy size={20} className="text-amber-400" /> All Players Live Rankings
+                  <Trophy size={20} className="text-amber-400" /> Visual Self-Evaluation Standings
                 </h2>
                 <span className="text-xs font-bold text-emerald-400 animate-pulse flex items-center gap-1">
                   ● Real-time
@@ -390,8 +392,8 @@ function HostContent() {
                   <thead className="sticky top-0 bg-slate-900 z-10">
                     <tr className="border-b border-purple-500/20 text-purple-300 font-bold uppercase text-xs tracking-wider">
                       <th className="pb-3 px-3">Rank</th>
-                      <th className="pb-3 px-3">Player Name</th>
-                      <th className="pb-3 px-3">Category</th>
+                      <th className="pb-3 px-3">Member Name</th>
+                      <th className="pb-3 px-3">Target Profile</th>
                       <th className="pb-3 px-3 text-center">Progress</th>
                       <th className="pb-3 px-3 text-right">Time</th>
                       <th className="pb-3 px-3 text-right">Score</th>

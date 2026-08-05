@@ -100,6 +100,36 @@ function GameContent() {
       });
   }, [pin]);
 
+  // Synchronized Global Room Status & Kick Listener
+  useEffect(() => {
+    if (!roomState) return;
+
+    const pId = localStorage.getItem('gd_player_id');
+
+    // 1. Kicked Check
+    if (pId && !roomState.players[pId]) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      localStorage.removeItem('gd_claimed_member_id');
+      localStorage.removeItem('gd_claimed_member_name');
+      router.push(`/join?pin=${pin}`);
+      return;
+    }
+
+    // 2. Host ended game -> Redirect all players to results
+    if (roomState.status === 'FINISHED' && !gameEnded) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      finishGame();
+      return;
+    }
+
+    // 3. Host reset room -> Redirect all players to lobby
+    if (roomState.status === 'LOBBY') {
+      if (timerRef.current) clearInterval(timerRef.current);
+      router.push(`/lobby?pin=${pin}`);
+      return;
+    }
+  }, [roomState, gameEnded, pin, router]);
+
   // Setup the 40-icon shuffled grid (10 Target Icons + 30 Distractors)
   const setupGrid = (targetMember: MemberProfile) => {
     const targets = targetMember.targetIcons.map((icon, idx) => ({
@@ -339,9 +369,9 @@ function GameContent() {
               🎯
             </div>
             <div className="min-w-0">
-              <span className="text-[10px] text-purple-300 font-bold uppercase tracking-wider">Find 10 Icons For: </span>
-              <span className="font-extrabold text-xs sm:text-sm text-amber-300 truncate">{member.name}</span>
-              <span className="text-[11px] text-slate-400 font-medium hidden xs:inline"> ({member.category})</span>
+              <span className="text-[10px] text-purple-300 font-bold uppercase tracking-wider">Visual Self-Evaluation: </span>
+              <span className="font-extrabold text-xs sm:text-sm text-amber-300 truncate">Find Your 10 Business Icons ({member.name})</span>
+              <span className="text-[11px] text-slate-400 font-medium hidden xs:inline"> - {member.category}</span>
             </div>
           </div>
 

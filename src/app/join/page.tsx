@@ -27,6 +27,20 @@ function JoinContent() {
     setPlayerId(pId);
   }, []);
 
+  // Synchronized Room Status Listener for Join page
+  useEffect(() => {
+    if (!roomState) return;
+
+    const pId = localStorage.getItem('gd_player_id');
+    const cMemberId = localStorage.getItem('gd_claimed_member_id');
+
+    if (pId && cMemberId && roomState.players[pId]) {
+      if (roomState.status === 'PLAYING') {
+        router.push(`/lobby?pin=${pin}`);
+      }
+    }
+  }, [roomState, pin, router]);
+
   const handleClaimName = async (member: MemberProfile) => {
     if (claimingMemberId) return;
     setClaimingMemberId(member.id);
@@ -90,13 +104,13 @@ function JoinContent() {
       <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col z-10 space-y-5">
         <div className="text-center space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase">
-            <Sparkles size={14} className="text-amber-400" /> BNI Nexora Roster ({members.length} Members)
+            <Sparkles size={14} className="text-amber-400" /> BNI Nexora Visual Self-Evaluation ({members.length} Members)
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-200 via-pink-300 to-amber-200">
-            Tap Your Member Name to Join
+            Select Yourself to Begin Evaluation
           </h1>
           <p className="text-xs sm:text-sm text-slate-300">
-            Click your assigned name below. It will automatically claim your profile and enter the lobby!
+            Tap your member name below to start. During the game, identify your own 10 business referral icons as fast as possible!
           </p>
         </div>
 

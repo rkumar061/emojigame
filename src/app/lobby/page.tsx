@@ -59,6 +59,11 @@ function LobbyContent() {
     if (roomState.status === 'PLAYING' && countdown === null) {
       triggerCountdownSequence();
     }
+
+    // GAME FINISHED TRIGGER: Check if game status changed to FINISHED
+    if (roomState.status === 'FINISHED') {
+      router.push(`/results?pin=${pin}`);
+    }
   }, [roomState, isHostView, pin, countdown, router]);
 
   const handleStartGame = async () => {

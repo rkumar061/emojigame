@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti';
 import { Trophy, Crown, Share2, Sparkles, X, Check, Award, Zap, Download, Loader2 } from 'lucide-react';
 import { toBlob } from 'html-to-image';
@@ -12,6 +12,7 @@ import { useRoomStore } from '@/lib/useRoomStore';
 function ResultsContent() {
   const searchParams = useSearchParams();
   const pin = searchParams.get('pin') || 'GD8492';
+  const router = useRouter();
 
   const { roomState } = useRoomStore(pin);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -39,6 +40,33 @@ function ResultsContent() {
       // ignore
     }
   }, []);
+
+  // Real-time Global Room Status & Kick Listener
+  useEffect(() => {
+    if (!roomState) return;
+
+    const pId = localStorage.getItem('gd_player_id');
+
+    // 1. Kicked Check
+    if (pId && !roomState.players[pId]) {
+      localStorage.removeItem('gd_claimed_member_id');
+      localStorage.removeItem('gd_claimed_member_name');
+      router.push(`/join?pin=${pin}`);
+      return;
+    }
+
+    // 2. Host started new game while player was on results screen!
+    if (roomState.status === 'PLAYING') {
+      router.push(`/lobby?pin=${pin}`);
+      return;
+    }
+
+    // 3. Host reset room to lobby
+    if (roomState.status === 'LOBBY') {
+      router.push(`/lobby?pin=${pin}`);
+      return;
+    }
+  }, [roomState, pin, router]);
 
   const playersList = Object.values(roomState?.players || {});
   // Sort leaderboard by Score desc, Accuracy % desc, Time asc
@@ -77,29 +105,22 @@ function ResultsContent() {
       // 1. Native Mobile Image File Sharing (Instagram, WhatsApp, iMessage, etc.)
       if (!forceDownload && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         await navigator.share({
-          title: 'Grape Dawn Victory Card',
-          text: `🏆 I ranked #${myRank} in the Grape Dawn Speed Quiz! 🍇`,
+          title: 'Grape Dawn Self-Evaluation Victory Card',
+          text: `🏆 I scored ${myPlayer?.score || 0} PTS in my Grape Dawn Visual Business Self-Evaluation! 🍇 Play at grapedawn.tech`,
           files: [imageFile],
         });
         setIsGeneratingImage(false);
         return;
       }
 
-      // 2. Direct PNG Download Fallback
-      const imageUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = imageUrl;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(imageUrl);
-
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 3000);
-    } catch (err) {
-      console.error('Error generating image share card:', err);
-    } finally {
+      // 2. Direct Download Fallback
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(imageFile);
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      setIsGeneratingImage(false);
+    } catch {
       setIsGeneratingImage(false);
     }
   };
@@ -134,10 +155,10 @@ function ResultsContent() {
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col items-center z-10 space-y-8 pb-12">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
-            <Trophy size={14} className="text-amber-400" /> Official Victory Standings
+            <Trophy size={14} className="text-amber-400" /> Visual Self-Evaluation Standings
           </div>
           <h1 className="text-3xl sm:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-amber-200 via-purple-200 to-pink-300">
-            Grape Dawn Champions!
+            Self-Evaluation Champions!
           </h1>
         </div>
 
@@ -208,10 +229,10 @@ function ResultsContent() {
               </div>
               <div>
                 <div className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5 justify-center sm:justify-start">
-                  Your Final Standing <span className="px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 text-[9px] font-black">YOU</span>
+                  Your Visual Self-Evaluation <span className="px-1.5 py-0.5 rounded bg-amber-400 text-amber-950 text-[9px] font-black">YOU</span>
                 </div>
                 <div className="text-lg sm:text-xl font-black text-white">{myPlayer.name}</div>
-                <div className="text-xs text-purple-200">Target Member: <span className="text-amber-300 font-bold">{myPlayer.claimedMemberName}</span></div>
+                <div className="text-xs text-purple-200">Business Target: <span className="text-amber-300 font-bold">{myPlayer.claimedMemberName}</span></div>
               </div>
             </div>
 
@@ -236,7 +257,7 @@ function ResultsContent() {
         <div className="w-full bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-purple-300 uppercase tracking-wider flex items-center gap-2">
-              <Award size={16} /> All Players Ranking
+              <Award size={16} /> All Members Self-Evaluation Rankings
             </h2>
 
             <button
@@ -252,8 +273,8 @@ function ResultsContent() {
               <thead>
                 <tr className="border-b border-purple-500/20 text-slate-400 font-semibold uppercase text-[10px]">
                   <th className="pb-3 px-2">Rank</th>
-                  <th className="pb-3 px-2">Player</th>
-                  <th className="pb-3 px-2">Assigned Member</th>
+                  <th className="pb-3 px-2">Member</th>
+                  <th className="pb-3 px-2">Target Profile</th>
                   <th className="pb-3 px-2 text-center">Progress</th>
                   <th className="pb-3 px-2 text-right">Time</th>
                   <th className="pb-3 px-2 text-right">Score</th>
@@ -346,10 +367,10 @@ function ResultsContent() {
                   priority
                 />
                 <div className="text-[10px] font-bold text-amber-300 uppercase tracking-widest flex items-center gap-1">
-                  <Zap size={11} className="text-amber-400" /> Speed Member Matching Quiz
+                  <Zap size={11} className="text-amber-400" /> Visual Business Self-Evaluation
                 </div>
                 <p className="text-[10px] text-slate-300 leading-tight max-w-[240px] pt-0.5">
-                  An interactive gamified referral showcase presentation by Grape Dawn for BNI Nexora.
+                  An interactive visual self-evaluation & business referral target showcase by Grape Dawn for BNI Nexora.
                 </p>
               </div>
 
@@ -362,7 +383,7 @@ function ResultsContent() {
                 <div>
                   <div className="text-lg font-black text-white">{myPlayer?.name || 'Player'}</div>
                   <div className="text-xs text-amber-300 font-bold">
-                    Target: {myPlayer?.claimedMemberName || 'Member'}
+                    Target Profile: {myPlayer?.claimedMemberName || 'Member'}
                   </div>
                 </div>
 
@@ -409,8 +430,8 @@ function ResultsContent() {
 
               {/* Story Card Footer Branding */}
               <div className="z-10 flex items-center justify-between border-t border-purple-500/30 pt-2 text-[10px] text-purple-300">
-                <span className="font-extrabold tracking-wide">GRAPE DAWN</span>
-                <span className="text-slate-400 font-mono">bni-nexora.org</span>
+                <span className="font-extrabold tracking-wide text-white">GRAPE DAWN</span>
+                <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
               </div>
             </div>
 
