@@ -482,136 +482,154 @@ function ResultsContent() {
               </button>
             </div>
 
-            {/* 9:16 INSTAGRAM STORY CARD CANVAS (SYNCHRONIZED GAMIFIED HUD DASHBOARD) */}
+            {/* 9:16 INSTAGRAM STORY CARD CANVAS (ENCLOSED FRAMED CARD WITH METEOR STREAKS) */}
             <div
               ref={storyCardRef}
-              className="w-[360px] h-[640px] rounded-[32px] bg-gradient-to-b from-[#180731] via-[#0a0319] to-[#28084a] border-2 border-purple-500/80 p-0 flex flex-col justify-between shadow-[0_0_60px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
+              className="w-[360px] h-[640px] rounded-[32px] bg-gradient-to-b from-[#0b0318] via-[#15062c] to-[#080214] border-2 border-purple-500/60 p-4 flex flex-col items-center justify-between shadow-[0_0_60px_rgba(168,85,247,0.5)] relative overflow-hidden select-none"
               style={{ width: '360px', height: '640px', boxSizing: 'border-box' }}
             >
-              {/* Tech Texture 1: Cyber Matrix Neon Grid */}
+              {/* Tech Texture 1: Matrix Neon Grid */}
               <div
-                className="absolute inset-0 pointer-events-none opacity-25 z-0"
+                className="absolute inset-0 pointer-events-none opacity-20 z-0"
                 style={{
                   backgroundImage: `linear-gradient(to right, rgba(168, 85, 247, 0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(168, 85, 247, 0.15) 1px, transparent 1px)`,
                   backgroundSize: '24px 24px',
                 }}
               />
 
-              {/* Tech Texture 2: Digital Circuit Dot Matrix */}
+              {/* Tech Texture 2: Subtle Diagonal Meteor Streaks & Cosmic Particles */}
               <div
-                className="absolute inset-0 pointer-events-none opacity-20 z-0"
+                className="absolute top-0 right-0 w-80 h-80 pointer-events-none opacity-30 z-0"
                 style={{
-                  backgroundImage: `radial-gradient(circle, rgba(251, 191, 36, 0.35) 1px, transparent 1.2px)`,
-                  backgroundSize: '16px 16px',
+                  background: 'radial-gradient(circle at 90% 10%, rgba(251, 191, 36, 0.4) 0%, rgba(236, 72, 153, 0.15) 45%, transparent 70%)',
+                }}
+              />
+              <div
+                className="absolute bottom-0 left-0 w-80 h-80 pointer-events-none opacity-30 z-0"
+                style={{
+                  background: 'radial-gradient(circle at 10% 90%, rgba(168, 85, 247, 0.4) 0%, rgba(59, 130, 246, 0.15) 45%, transparent 70%)',
+                }}
+              />
+              {/* Meteor Trail Overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-25 z-0"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, transparent 20%, transparent 40%, rgba(168, 85, 247, 0.2) 60%, transparent 80%)`,
                 }}
               />
 
-              {/* 1. Header: Radiant Golden Banner Flushed to Top Edge */}
-              <div
-                className="w-full h-[58px] px-4 py-2 flex items-center justify-between border-b border-amber-300/40 relative z-20 shrink-0 shadow-md"
-                style={{
-                  background: 'linear-gradient(135deg, #fffbeb 0%, #fef08a 35%, #fde047 70%, #eab308 100%)',
-                }}
-              >
-                <Image
-                  src="/logo-horizental.png"
-                  alt="Grape Dawn"
-                  width={140}
-                  height={36}
-                  className="object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)]"
-                  priority
-                />
-
-                {/* Right Badge: BNI NEXORA */}
-                <div className="px-3 py-1 rounded-full bg-[#180902] text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1 shadow border border-amber-400/60">
-                  <Zap size={11} className="text-amber-400 fill-amber-400" /> BNI NEXORA
-                </div>
-              </div>
-
-              {/* 2. Unified Single Integrated HUD Unit (Zero Dead Space) */}
-              <div className="mx-3.5 my-auto bg-[#120625]/90 border border-purple-500/50 rounded-2xl p-3.5 flex flex-col gap-3 shadow-2xl relative z-10 shrink-0">
-                {/* Row A: Achievement Header & Rank */}
-                <div className="flex items-center justify-between border-b border-purple-500/30 pb-2.5">
-                  <div className="text-[10px] font-black text-amber-300 uppercase tracking-wider flex items-center gap-1">
-                    <Trophy size={13} className="text-amber-400" /> ACHIEVEMENT UNLOCKED
+              {/* ENCLOSED INNER ACHIEVEMENT CARD (ZOOMED OUT PROTECTED CARD BOX) */}
+              <div className="w-[328px] h-[608px] rounded-[26px] bg-gradient-to-b from-[#1b083b] via-[#0e0422] to-[#250849] border-2 border-purple-500/80 shadow-2xl flex flex-col justify-between overflow-hidden relative z-10 select-none">
+                {/* 1. Header: Slanted Golden Logo Banner */}
+                <div className="w-full h-[58px] bg-[#0c0419] flex items-center justify-between border-b border-purple-500/40 relative shrink-0 overflow-hidden">
+                  {/* Slanted Golden Banner */}
+                  <div
+                    className="h-full px-4 py-2 flex items-center pr-8"
+                    style={{
+                      background: 'linear-gradient(135deg, #fffbeb 0%, #fef08a 35%, #fde047 70%, #eab308 100%)',
+                      clipPath: 'polygon(0 0, 84% 0, 100% 100%, 0 100%)',
+                    }}
+                  >
+                    <Image
+                      src="/logo-horizental.png"
+                      alt="Grape Dawn"
+                      width={125}
+                      height={32}
+                      className="object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+                      priority
+                    />
                   </div>
-                  <div className="px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 text-amber-950 font-black text-[11px] uppercase tracking-wider shadow-md">
-                    {myRank === 1 ? '🥇 CHAMPION' : myRank === 2 ? '🥈 2ND PLACE' : myRank === 3 ? '🥉 3RD PLACE' : `RANK #${myRank}`}
+
+                  {/* Right Badge: BNI NEXORA */}
+                  <div className="mr-3 px-2.5 py-1 rounded-full bg-purple-950/80 border border-amber-400/60 text-[9.5px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1 shadow">
+                    <Zap size={10} className="text-amber-400 fill-amber-400" /> BNI NEXORA
                   </div>
                 </div>
 
-                {/* Row B: Player Profile */}
-                <div className="text-center space-y-0.5">
-                  <div className="text-2xl font-black text-white tracking-wide">{myPlayer?.name || 'Player'}</div>
-                  <div className="text-xs text-amber-300 font-bold truncate">
-                    {myPlayer?.claimedCategory || claimedMember?.category || 'BNI Member'} • BNI Nexora
-                  </div>
+                {/* 2. Achievement Unlocked Ribbon */}
+                <div className="mx-3 mt-2.5 py-1 px-3 rounded-full bg-amber-500/10 border border-amber-400/40 text-[9.5px] font-black text-amber-300 uppercase tracking-widest text-center flex items-center justify-center gap-1.5 shrink-0 shadow">
+                  <Trophy size={12} className="text-amber-400" /> 🏆 ACHIEVEMENT UNLOCKED
                 </div>
 
-                {/* Row C: Hero Score Display */}
-                <div className="bg-gradient-to-r from-[#1b083b] via-[#0a0219] to-[#1b083b] border border-emerald-400/80 rounded-xl p-2.5 text-center space-y-0.5 shadow-inner">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                    TOTAL EVALUATION SCORE
-                  </span>
-                  <div className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.8)] tracking-tight">
-                    {myPlayer?.score || 0} <span className="text-xs font-sans text-emerald-300">PTS</span>
-                  </div>
-                  <div className="text-[10px] text-purple-200 font-bold">
-                    🎯 {myPlayer?.correctCount || 0}/10 Business Target Icons Identified
-                  </div>
-                </div>
+                {/* 3. Player Victory Profile Block */}
+                <div className="mx-3 my-auto bg-[#120625]/90 border border-purple-500/50 rounded-2xl p-3 flex flex-col gap-2.5 shadow-xl shrink-0">
+                  {/* Rank Badge & Name */}
+                  <div className="flex flex-col items-center text-center space-y-1">
+                    <div className="px-4 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-200 to-amber-500 text-amber-950 font-black text-xs uppercase tracking-wider shadow-md">
+                      {myRank === 1 ? '🥇 CHAMPION • RANK #1' : myRank === 2 ? '🥈 2ND PLACE • RANK #2' : myRank === 3 ? '🥉 3RD PLACE • RANK #3' : `RANK #${myRank} • VICTORY`}
+                    </div>
 
-                {/* Row D: Synchronized 3-Column Stats Grid */}
-                <div className="grid grid-cols-3 gap-2 text-center bg-[#180733] border border-purple-500/40 rounded-xl p-2">
-                  <div className="flex flex-col items-center justify-center border-r border-purple-500/30 pr-1">
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                      <Clock size={9} className="text-amber-400" /> TIME
+                    <div className="text-2xl font-black text-white tracking-wide">{myPlayer?.name || 'Player'}</div>
+                    <div className="text-xs text-amber-300 font-bold truncate max-w-[260px]">
+                      {myPlayer?.claimedCategory || claimedMember?.category || 'BNI Member'} • BNI Nexora
+                    </div>
+                  </div>
+
+                  {/* Hero Score Box */}
+                  <div className="bg-gradient-to-r from-[#1b083b] via-[#0a0219] to-[#1b083b] border border-emerald-400/80 rounded-xl p-2.5 text-center space-y-0.5 shadow-inner">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                      TOTAL EVALUATION SCORE
                     </span>
-                    <span className="font-mono text-sm font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
+                    <div className="text-3xl font-black font-mono text-emerald-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.8)] tracking-tight">
+                      {myPlayer?.score || 0} <span className="text-xs font-sans text-emerald-300">PTS</span>
+                    </div>
+                    <div className="text-[10px] text-purple-200 font-bold">
+                      🎯 {myPlayer?.correctCount || 0}/10 Business Target Icons Identified
+                    </div>
                   </div>
 
-                  <div className="flex flex-col items-center justify-center border-r border-purple-500/30 px-1">
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                      <Target size={9} className="text-cyan-300" /> ACCURACY
-                    </span>
-                    <span className="font-mono text-sm font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
+                  {/* 3-Column Stats Grid */}
+                  <div className="grid grid-cols-3 gap-1.5 text-center bg-[#180733] border border-purple-500/40 rounded-xl p-2">
+                    <div className="flex flex-col items-center justify-center border-r border-purple-500/30 pr-1">
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                        <Clock size={9} className="text-amber-400" /> TIME
+                      </span>
+                      <span className="font-mono text-sm font-black text-amber-300">{myPlayer?.timeSec ? `${myPlayer.timeSec}s` : '-'}</span>
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center border-r border-purple-500/30 px-1">
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                        <Target size={9} className="text-cyan-300" /> ACCURACY
+                      </span>
+                      <span className="font-mono text-sm font-black text-cyan-300">{myPlayer?.accuracy || 100}%</span>
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center pl-1">
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
+                        <Flame size={9} className="text-amber-400" /> COMBO
+                      </span>
+                      <span className="font-mono text-sm font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col items-center justify-center pl-1">
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-0.5">
-                      <Flame size={9} className="text-amber-400" /> COMBO
-                    </span>
-                    <span className="font-mono text-sm font-black text-amber-400">{myPlayer?.maxCombo >= 2 ? `🔥 ${myPlayer.maxCombo}x` : '1x'}</span>
+                  {/* Motivation Banner */}
+                  <div className="bg-gradient-to-r from-[#200940] via-[#100324] to-[#200940] border border-amber-400/50 rounded-xl p-2 text-center space-y-0.5">
+                    <div className="text-[9.5px] font-black text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1">
+                      <Sparkles size={11} className="text-amber-400 fill-amber-400" />
+                      {myRank === 1
+                        ? 'LEGENDARY REFERRAL VISIONARY'
+                        : myRank <= 3
+                        ? 'EPIC GIVERS GAIN CHAMPION'
+                        : 'SHARP REFERRAL MINDSET'}
+                    </div>
+                    <p className="text-[9px] text-purple-100 leading-snug font-medium">
+                      {myRank === 1
+                        ? '⚡ Spotting business targets in record time! Ready to pass quality referrals for BNI Nexora members!'
+                        : myRank <= 3
+                        ? '🤝 Connecting businesses through rapid visual recognition — empowering BNI Nexora referral growth!'
+                        : '🚀 Visual self-evaluation completed! Sharpening business networking skills with Grape Dawn & BNI Nexora!'}
+                    </p>
                   </div>
                 </div>
 
-                {/* Row E: Integrated Motivation Banner */}
-                <div className="bg-gradient-to-r from-[#200940] via-[#100324] to-[#200940] border border-amber-400/50 rounded-xl p-2 text-center space-y-0.5">
-                  <div className="text-[9.5px] font-black text-amber-300 uppercase tracking-wider flex items-center justify-center gap-1">
-                    <Sparkles size={11} className="text-amber-400 fill-amber-400" />
-                    {myRank === 1
-                      ? 'LEGENDARY REFERRAL VISIONARY'
-                      : myRank <= 3
-                      ? 'EPIC GIVERS GAIN CHAMPION'
-                      : 'SHARP REFERRAL MINDSET'}
+                {/* 4. Footer Branding */}
+                <div className="w-full px-3.5 py-2 flex items-center justify-between border-t border-purple-500/40 text-[9.5px] shrink-0 bg-[#0d041b]">
+                  <div className="flex items-center gap-1 font-black tracking-wide text-white">
+                    <span>🍇 GRAPE DAWN</span>
+                    <span className="text-purple-400">• BNI NEXORA</span>
                   </div>
-                  <p className="text-[9px] text-purple-100 leading-snug font-medium">
-                    {myRank === 1
-                      ? '⚡ Spotting business targets in record time! Ready to pass quality referrals for BNI Nexora members!'
-                      : myRank <= 3
-                      ? '🤝 Connecting businesses through rapid visual recognition — empowering BNI Nexora referral growth!'
-                      : '🚀 Visual self-evaluation completed! Sharpening business networking skills with Grape Dawn & BNI Nexora!'}
-                  </p>
+                  <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
                 </div>
-              </div>
-
-              {/* 3. Footer Branding (Flushed to Bottom) */}
-              <div className="w-full px-4 py-2.5 flex items-center justify-between border-t border-purple-500/40 text-[10px] z-20 shrink-0 bg-[#0d041b]">
-                <div className="flex items-center gap-1 font-black tracking-wide text-white">
-                  <span>🍇 GRAPE DAWN</span>
-                  <span className="text-purple-400">• BNI NEXORA</span>
-                </div>
-                <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
               </div>
             </div>
 
