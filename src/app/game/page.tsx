@@ -366,9 +366,9 @@ function GameContent() {
   const currentAcc = totalClicks > 0 ? Math.round((correctCount / totalClicks) * 100) : 100;
 
   return (
-    <div className="h-screen max-h-[100dvh] w-screen overflow-hidden bg-[#0b0517] text-slate-100 flex flex-col justify-between p-1.5 sm:p-3 select-none font-sans gap-1.5">
+    <div className="h-screen max-h-[100dvh] w-screen overflow-hidden text-slate-100 flex flex-col justify-between p-1.5 sm:p-3 select-none font-sans gap-1.5">
       {/* HIGH-DENSITY COMPACT LIVE ANALYTICS HUD */}
-      <header className="w-full bg-slate-950/90 border border-purple-500/30 rounded-2xl p-2 sm:p-2.5 shadow-2xl backdrop-blur-xl flex flex-col gap-1.5 shrink-0">
+      <header className="w-full glass-panel p-2 sm:p-2.5 flex flex-col gap-1.5 shrink-0">
         {/* Row 1: Target Member & Live Rank Badge */}
         <div className="flex items-center justify-between gap-2 border-b border-purple-500/20 pb-1">
           <div className="flex items-center gap-2 min-w-0">
@@ -394,35 +394,35 @@ function GameContent() {
 
         {/* Row 2: Analytics Cards Grid (Time, Found, Score, Accuracy, Combo) */}
         <div className="grid grid-cols-5 gap-1 text-center items-center">
-          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+          <div className="bg-purple-950/40 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
             <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
               <Clock size={10} className="text-amber-400 animate-pulse" /> Time
             </div>
             <span className="font-mono text-xs sm:text-base font-black text-amber-300">{timeLeft}s</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+          <div className="bg-purple-950/40 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
             <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
               <CheckCircle2 size={10} className="text-emerald-400" /> Found
             </div>
             <span className="font-mono text-xs sm:text-base font-black text-emerald-300">{correctCount}/10</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+          <div className="bg-purple-950/40 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
             <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
               <Sparkles size={10} className="text-purple-400" /> Score
             </div>
             <span className="font-mono text-xs sm:text-base font-black text-emerald-400">{score}</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+          <div className="bg-purple-950/40 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
             <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
               <Target size={10} className="text-cyan-400" /> Acc
             </div>
             <span className="font-mono text-xs sm:text-base font-black text-cyan-300">{currentAcc}%</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
+          <div className="bg-purple-950/40 border border-purple-500/20 rounded-xl p-1 flex flex-col items-center justify-center">
             <div className="flex items-center gap-1 text-[9px] font-bold text-slate-400 uppercase">
               <Flame size={10} className="text-rose-400" /> Combo
             </div>
@@ -436,12 +436,12 @@ function GameContent() {
       {/* FULL-PAGE ZERO-SCROLL 40-TILE GRID CONTAINER */}
       <main className="flex-1 w-full max-h-[calc(100dvh-105px)] grid grid-cols-5 grid-rows-8 sm:grid-cols-8 sm:grid-rows-5 md:grid-cols-10 md:grid-rows-4 gap-1 sm:gap-1.5 justify-center items-center overflow-hidden">
         {tiles.map((tile) => {
-          let tileBg = 'bg-slate-900/80 border-purple-500/25 hover:border-purple-400/60 text-slate-200';
+          let tileBg = 'bg-purple-950/30 border border-purple-500/20 hover:border-purple-400/50 hover:bg-purple-900/30 text-slate-100';
           if (tile.clicked) {
             if (tile.isCorrect) {
-              tileBg = 'animate-correct bg-emerald-950/90 border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(34,197,94,0.6)]';
+              tileBg = 'animate-correct bg-emerald-950/90 border-2 border-emerald-400 text-emerald-300 shadow-[0_0_15px_rgba(34,197,94,0.6)]';
             } else {
-              tileBg = 'animate-wrong bg-rose-950/90 border-rose-500 text-rose-400';
+              tileBg = 'animate-wrong bg-rose-950/90 border-2 border-rose-500 text-rose-400';
             }
           }
 

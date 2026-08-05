@@ -26,6 +26,7 @@ import { INITIAL_MEMBERS, DEFAULT_DISTRACTOR_POOL } from '@/lib/defaultData';
 import { IconPickerModal } from '@/components/IconPickerModal';
 import { IconRenderer } from '@/components/IconRenderer';
 import { useRoomStore } from '@/lib/useRoomStore';
+import { GrapeHeader } from '@/components/GrapeHeader';
 
 export default function AdminPage() {
   const [pin, setPin] = useState('GD8492');
@@ -156,46 +157,29 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0b0517] text-slate-100 flex flex-col font-sans">
-      {/* Top Header */}
-      <header className="h-16 border-b border-purple-500/20 bg-slate-950/80 px-6 flex items-center justify-between z-10">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo-horizental.png?v=2"
-              alt="Grape Dawn"
-              width={150}
-              height={40}
-              className="object-contain filter drop-shadow-[0_0_10px_rgba(168,85,247,0.4)]"
-            />
-          </Link>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-purple-900/60 border border-purple-500/30 text-purple-300">
-            ADMIN PANEL
-          </span>
-        </div>
+    <div className="min-h-screen text-slate-100 flex flex-col font-sans">
+      {/* Top Header with Slanted Golden Logo Banner */}
+      <GrapeHeader
+        subtitle="Admin Control & Setup"
+        roomCode={pin}
+        rightActions={
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleStartGame}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold text-xs shadow-lg shadow-emerald-500/20 transition"
+            >
+              <Play size={15} /> Start Game
+            </button>
 
-        <div className="flex items-center gap-4">
-          {/* Room PIN Display */}
-          <div className="flex items-center gap-2 bg-slate-900 border border-purple-500/30 px-3 py-1.5 rounded-xl">
-            <span className="text-xs text-slate-400 font-semibold">PIN:</span>
-            <span className="font-mono text-amber-300 font-extrabold text-lg">{pin}</span>
+            <Link
+              href="/host"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 font-semibold text-xs transition"
+            >
+              <Tv size={15} /> Live Host Screen
+            </Link>
           </div>
-
-          <button
-            onClick={handleStartGame}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-lg transition"
-          >
-            <Play size={16} /> Start Game
-          </button>
-
-          <Link
-            href="/host"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 hover:bg-amber-500/30 font-semibold text-xs transition"
-          >
-            <Tv size={16} /> Live Host Screen
-          </Link>
-        </div>
-      </header>
+        }
+      />
 
       {/* Main Admin Workspace with Left Side Panel */}
       <div className="flex-1 flex overflow-hidden">
@@ -238,11 +222,10 @@ export default function AdminPage() {
                 <div
                   key={m.id}
                   onClick={() => setSelectedMemberId(m.id)}
-                  className={`p-3 rounded-xl cursor-pointer transition flex items-center justify-between border ${
-                    isSelected
+                  className={`p-3 rounded-xl cursor-pointer transition flex items-center justify-between border ${isSelected
                       ? 'bg-purple-950/80 border-purple-500 text-white shadow-lg'
                       : 'bg-slate-900/40 hover:bg-slate-900/80 border-slate-800/60 text-slate-300'
-                  }`}
+                    }`}
                 >
                   <div className="flex-1 min-w-0 pr-2">
                     <div className="font-bold text-sm truncate flex items-center gap-2">

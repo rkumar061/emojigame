@@ -106,7 +106,7 @@ function ResultsContent() {
       if (!forceDownload && navigator.canShare && navigator.canShare({ files: [imageFile] })) {
         await navigator.share({
           title: 'Grape Dawn Self-Evaluation Victory Card',
-          text: `🏆 I scored ${myPlayer?.score || 0} PTS in my Grape Dawn Visual Business Self-Evaluation! 🍇 Play at game.grapedawn.tech`,
+          text: `🏆 I scored ${myPlayer?.score || 0} PTS in my Grape Dawn Visual Business Self-Evaluation! 🍇 visit grapedawn.tech`,
           files: [imageFile],
         });
         setIsGeneratingImage(false);
@@ -134,7 +134,7 @@ function ResultsContent() {
       {/* Top Header Bar (No Back to Home button for player) */}
       <header className="py-3 px-4 sm:px-6 border-b border-purple-500/20 bg-slate-950/70 flex items-center justify-between z-10">
         <Image
-          src="/logo-horizental.png?v=2"
+          src="/logo-horizental.png"
           alt="Grape Dawn"
           width={160}
           height={42}
@@ -288,11 +288,10 @@ function ResultsContent() {
                   return (
                     <tr
                       key={player.id}
-                      className={`transition ${
-                        isSelf
-                          ? 'bg-gradient-to-r from-amber-500/25 via-purple-600/30 to-pink-500/25 border-l-4 border-amber-400 font-extrabold shadow-lg'
-                          : 'hover:bg-purple-950/30'
-                      }`}
+                      className={`transition ${isSelf
+                        ? 'bg-gradient-to-r from-amber-500/25 via-purple-600/30 to-pink-500/25 border-l-4 border-amber-400 font-extrabold shadow-lg'
+                        : 'hover:bg-purple-950/30'
+                        }`}
                     >
                       <td className="py-3 px-2 font-bold text-slate-300">
                         {idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}
@@ -359,7 +358,7 @@ function ResultsContent() {
               {/* Story Header */}
               <div className="flex flex-col items-center text-center space-y-1 z-10">
                 <Image
-                  src="/logo-horizental.png?v=2"
+                  src="/logo-horizental.png"
                   alt="Grape Dawn"
                   width={150}
                   height={40}
@@ -414,9 +413,8 @@ function ResultsContent() {
                   {sortedPlayers.slice(0, 3).map((p, idx) => (
                     <div
                       key={p.id}
-                      className={`flex items-center justify-between px-2 py-1 rounded-xl text-xs font-medium ${
-                        p.id === myPlayerId ? 'bg-amber-500/20 border border-amber-400/50 font-bold' : 'bg-slate-900/60'
-                      }`}
+                      className={`flex items-center justify-between px-2 py-1 rounded-xl text-xs font-medium ${p.id === myPlayerId ? 'bg-amber-500/20 border border-amber-400/50 font-bold' : 'bg-slate-900/60'
+                        }`}
                     >
                       <div className="flex items-center gap-1.5 truncate min-w-0">
                         <span>{idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉'}</span>
@@ -431,7 +429,7 @@ function ResultsContent() {
               {/* Story Card Footer Branding */}
               <div className="z-10 flex items-center justify-between border-t border-purple-500/30 pt-2 text-[10px] text-purple-300">
                 <span className="font-extrabold tracking-wide text-white">GRAPE DAWN</span>
-                <span className="text-amber-300 font-mono font-bold">game.grapedawn.tech</span>
+                <span className="text-amber-300 font-mono font-bold">grapedawn.tech</span>
               </div>
             </div>
 

@@ -1,18 +1,18 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Lock, ArrowRight, Search, Sparkles, CheckCircle2, UserCheck } from 'lucide-react';
-import { RoomState, MemberProfile } from '@/types/game';
+import { Lock, ArrowRight, Search, Sparkles, CheckCircle2 } from 'lucide-react';
+import { MemberProfile } from '@/types/game';
 import { useRoomStore } from '@/lib/useRoomStore';
+import { GrapeHeader } from '@/components/GrapeHeader';
 
 function JoinContent() {
   const searchParams = useSearchParams();
   const pin = searchParams.get('pin') || 'GD8492';
   const router = useRouter();
 
-  const { roomState, isConnected } = useRoomStore(pin);
+  const { roomState } = useRoomStore(pin);
   const [searchTerm, setSearchTerm] = useState('');
   const [claimingMemberId, setClaimingMemberId] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -86,19 +86,9 @@ function JoinContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0b0517] text-slate-100 flex flex-col font-sans relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -right-40 w-96 h-96 bg-pink-600/15 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="min-h-screen text-slate-100 flex flex-col font-sans relative overflow-hidden">
       {/* Header */}
-      <header className="py-4 px-6 border-b border-purple-500/20 bg-slate-950/60 flex items-center justify-between z-10">
-        <Image src="/logo-horizental.png?v=2" alt="Grape Dawn" width={140} height={40} className="object-contain" />
-        <div className="flex items-center gap-2 bg-slate-900 border border-purple-500/30 px-3 py-1.5 rounded-xl">
-          <span className="text-xs text-slate-400 font-semibold">ROOM PIN:</span>
-          <span className="font-mono text-amber-300 font-extrabold text-base">{pin}</span>
-        </div>
-      </header>
+      <GrapeHeader subtitle="Claim Member Profile" roomCode={pin} />
 
       {/* Main Container */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col z-10 space-y-5">
@@ -122,7 +112,7 @@ function JoinContent() {
             placeholder="Search member name or category..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-slate-900/90 border border-purple-500/30 rounded-2xl text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-purple-400 shadow-xl"
+            className="w-full pl-11 pr-4 py-3 glass-panel text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-purple-400 shadow-xl"
           />
         </div>
 
@@ -144,13 +134,12 @@ function JoinContent() {
                 key={member.id}
                 disabled={isClaimedByOther || !!claimingMemberId}
                 onClick={() => handleClaimName(member)}
-                className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between relative group ${
-                  isClaimedByMe
+                className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between relative group ${isClaimedByMe
                     ? 'bg-purple-950/90 border-purple-400 text-white shadow-xl shadow-purple-900/30'
                     : isClaimedByOther
-                    ? 'bg-slate-950/40 border-slate-900 text-slate-500 opacity-60 cursor-not-allowed'
-                    : 'bg-slate-900/80 hover:bg-slate-850 border-purple-500/30 hover:border-purple-400 text-slate-200 shadow-lg transform hover:-translate-y-0.5'
-                }`}
+                      ? 'bg-slate-950/40 border-slate-900 text-slate-500 opacity-60 cursor-not-allowed'
+                      : 'glass-panel hover:bg-purple-900/30 hover:border-purple-400 text-slate-200 shadow-lg transform hover:-translate-y-0.5'
+                  }`}
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-1">

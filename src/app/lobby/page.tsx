@@ -9,6 +9,7 @@ import { Users, Play, Copy, Check, QrCode, Loader2, RotateCcw, Shield, Tv, Arrow
 import { RoomState } from '@/types/game';
 import { sound } from '@/lib/sound';
 import { useRoomStore } from '@/lib/useRoomStore';
+import { GrapeHeader } from '@/components/GrapeHeader';
 
 function LobbyContent() {
   const searchParams = useSearchParams();
@@ -147,27 +148,20 @@ function LobbyContent() {
       )}
 
       {/* Header */}
-      <header className="py-3 px-4 border-b border-purple-500/20 bg-slate-950/80 flex items-center justify-between z-10 shrink-0">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo-horizental.png?v=2" alt="Grape Dawn" width={130} height={36} className="object-contain" priority />
-        </Link>
-
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-slate-900 border border-purple-500/30 px-2.5 py-1 rounded-xl">
-            <span className="text-[10px] text-slate-400 font-semibold uppercase">PIN:</span>
-            <span className="font-mono text-amber-300 font-extrabold text-sm sm:text-base">{pin}</span>
-          </div>
-
-          {isHostView && (
+      <GrapeHeader
+        subtitle={isHostView ? 'Host Control Lobby' : 'Game Lobby'}
+        roomCode={pin}
+        rightActions={
+          isHostView ? (
             <Link
               href="/admin"
-              className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-purple-900/40 border border-purple-500/30 text-purple-200"
+              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-purple-900/40 border border-purple-500/30 text-purple-200 shadow-md"
             >
               Admin
             </Link>
-          )}
-        </div>
-      </header>
+          ) : undefined
+        }
+      />
 
       {/* Main Container - Mobile Optimized */}
       <main className="flex-1 max-w-md md:max-w-4xl w-full mx-auto p-4 flex flex-col justify-center items-center text-center z-10 space-y-6">
@@ -186,7 +180,7 @@ function LobbyContent() {
 
               <button
                 onClick={handleStartGame}
-                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-lg rounded-2xl shadow-xl shadow-emerald-950/60 flex items-center justify-center gap-2.5 transform active:scale-95 transition"
+                className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2.5 transform active:scale-95 transition"
               >
                 <Play size={22} /> START GAME NOW!
               </button>
@@ -194,7 +188,7 @@ function LobbyContent() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
               {/* QR CODE CARD */}
-              <div className="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col items-center text-center space-y-3">
+              <div className="glass-panel p-5 flex flex-col items-center text-center space-y-3">
                 <h2 className="text-sm font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
                   <QrCode size={18} /> Join Room QR Code
                 </h2>
@@ -211,13 +205,13 @@ function LobbyContent() {
               </div>
 
               {/* ROSTER */}
-              <div className="md:col-span-2 bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl space-y-3 text-left">
+              <div className="md:col-span-2 glass-panel p-5 space-y-3 text-left">
                 <h2 className="text-sm font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
                   <Users size={18} /> Active Players ({players.length})
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-60 overflow-y-auto custom-scrollbar">
                   {players.map((p) => (
-                    <div key={p.id} className="p-3 rounded-2xl bg-slate-950 border border-purple-500/20 flex items-center gap-3">
+                    <div key={p.id} className="p-3 rounded-2xl bg-slate-950/80 border border-purple-500/20 flex items-center gap-3">
                       <div className="w-8 h-8 rounded-xl bg-purple-600 flex items-center justify-center font-extrabold text-white text-xs">
                         {p.name.charAt(0)}
                       </div>
@@ -233,7 +227,7 @@ function LobbyContent() {
           </div>
         ) : (
           /* PLAYER VIEW LAYOUT (Strict Mobile-First centered card) */
-          <div className="w-full max-w-sm sm:max-w-md bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 shadow-2xl backdrop-blur-xl space-y-6 relative group">
+          <div className="w-full max-w-sm sm:max-w-md glass-panel p-6 space-y-6 relative group">
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider">
                 <Loader2 size={14} className="animate-spin text-amber-400" /> Waiting Room

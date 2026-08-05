@@ -17,7 +17,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#0b0517",
+  themeColor: "#06040a",
 };
 
 export const metadata: Metadata = {
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     siteName: "Grape Dawn",
     images: [
       {
-        url: "/logo-horizental.png?v=2",
+        url: "/logo-horizental.png",
         width: 1200,
         height: 630,
         alt: "Grape Dawn BNI Nexora Quiz",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     title: "Grape Dawn | BNI Nexora Speed Member Matching Quiz",
     description:
       "Interactive real-time speed member-matching presentation game by Grape Dawn.",
-    images: ["/logo-horizental.png?v=2"],
+    images: ["/logo-horizental.png"],
   },
 };
 
@@ -81,7 +81,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0b0517] text-slate-100 font-sans">
+      <body className="min-h-full flex flex-col grapedawn-body text-slate-100 font-sans relative">
+        <div className="fixed inset-0 grapedawn-grid-overlay pointer-events-none z-0" />
         {children}
       </body>
     </html>

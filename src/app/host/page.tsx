@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { RoomState, GameConfig } from '@/types/game';
 import { useRoomStore } from '@/lib/useRoomStore';
+import { GrapeHeader } from '@/components/GrapeHeader';
 
 function HostContent() {
   const searchParams = useSearchParams();
@@ -133,88 +134,74 @@ function HostContent() {
   const isPlaying = roomState?.status === 'PLAYING' || roomState?.status === 'FINISHED';
 
   return (
-    <div className="min-h-screen bg-[#0b0517] text-slate-100 flex flex-col font-sans relative overflow-hidden">
+    <div className="min-h-screen text-slate-100 flex flex-col font-sans relative overflow-hidden">
       {/* Top TV Screen Control Bar */}
-      <header className="h-20 border-b border-purple-500/20 bg-slate-950/80 px-6 sm:px-8 flex items-center justify-between z-10">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo-horizental.png?v=2"
-              alt="Grape Dawn"
-              width={200}
-              height={55}
-              className="object-contain filter drop-shadow-[0_0_12px_rgba(168,85,247,0.5)]"
-              priority
-            />
-          </Link>
-          <div className="hidden sm:flex items-center gap-2 bg-slate-900 border border-purple-500/30 px-3.5 py-1.5 rounded-xl">
-            <span className="text-xs text-slate-400 font-semibold">PIN:</span>
-            <span className="font-mono text-amber-300 font-extrabold text-xl">{pin}</span>
-          </div>
-        </div>
-
-        {/* Action Buttons Toolbar */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Share Lobby Button */}
-          <button
-            onClick={() => setShowShareModal(true)}
-            className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-purple-900/50 hover:bg-purple-800/70 border border-purple-500/30 text-purple-200 transition shadow-md"
-            title="Share Lobby & QR Code"
-          >
-            <Share2 size={16} /> <span className="hidden sm:inline">Share Lobby</span>
-          </button>
-
-          {/* Game Settings Button */}
-          <button
-            onClick={() => setShowSettingsModal(true)}
-            className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-purple-950/60 border border-purple-500/30 text-purple-300 transition shadow-md"
-            title="Game Settings"
-          >
-            <Settings size={16} /> <span className="hidden sm:inline">Settings</span>
-          </button>
-
-          {/* Reset / Kick Player Button */}
-          <button
-            onClick={() => setShowKickModal(true)}
-            className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/40 text-rose-300 transition shadow-md"
-            title="Send Player to Name Selection"
-          >
-            <UserX size={16} /> <span className="hidden sm:inline">Reset Player</span>
-          </button>
-
-          {/* START / STOP / LOBBY CONTROL */}
-          {roomState?.status === 'PLAYING' ? (
+      <GrapeHeader
+        subtitle="Big Screen TV Host Controller"
+        roomCode={pin}
+        rightActions={
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Share Lobby Button */}
             <button
-              onClick={handleStopGame}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-extrabold text-sm shadow-xl shadow-rose-950/50 transition transform active:scale-95"
+              onClick={() => setShowShareModal(true)}
+              className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-purple-900/50 hover:bg-purple-800/70 border border-purple-500/30 text-purple-200 transition shadow-md"
+              title="Share Lobby & QR Code"
             >
-              <Square size={16} /> STOP GAME
+              <Share2 size={16} /> <span className="hidden sm:inline">Share Lobby</span>
             </button>
-          ) : roomState?.status === 'FINISHED' ? (
-            <div className="flex items-center gap-2">
+
+            {/* Game Settings Button */}
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-purple-950/80 hover:bg-purple-900/80 border border-purple-500/30 text-purple-300 transition shadow-md"
+              title="Game Settings"
+            >
+              <Settings size={16} /> <span className="hidden sm:inline">Settings</span>
+            </button>
+
+            {/* Reset / Kick Player Button */}
+            <button
+              onClick={() => setShowKickModal(true)}
+              className="flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl bg-rose-950/60 hover:bg-rose-900/80 border border-rose-500/40 text-rose-300 transition shadow-md"
+              title="Send Player to Name Selection"
+            >
+              <UserX size={16} /> <span className="hidden sm:inline">Reset Player</span>
+            </button>
+
+            {/* START / STOP / LOBBY CONTROL */}
+            {roomState?.status === 'PLAYING' ? (
               <button
-                onClick={handleResetToLobby}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 font-extrabold text-xs border border-purple-500/30 transition transform active:scale-95 shadow-lg"
+                onClick={handleStopGame}
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-extrabold text-sm shadow-xl shadow-rose-950/50 transition transform active:scale-95"
               >
-                <RotateCcw size={14} /> BACK TO LOBBY
+                <Square size={16} /> STOP GAME
               </button>
+            ) : roomState?.status === 'FINISHED' ? (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleResetToLobby}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 font-extrabold text-xs border border-purple-500/30 transition transform active:scale-95 shadow-lg"
+                >
+                  <RotateCcw size={14} /> BACK TO LOBBY
+                </button>
+                <button
+                  onClick={handleStartGame}
+                  className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold text-sm shadow-lg shadow-emerald-500/20 transition transform active:scale-95"
+                >
+                  <Play size={16} /> START GAME
+                </button>
+              </div>
+            ) : (
               <button
                 onClick={handleStartGame}
-                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-950/50 transition transform active:scale-95"
+                className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold text-sm shadow-lg shadow-emerald-500/20 transition transform active:scale-95"
               >
                 <Play size={16} /> START GAME
               </button>
-            </div>
-          ) : (
-            <button
-              onClick={handleStartGame}
-              className="flex items-center gap-2 px-6 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-950/50 transition transform active:scale-95"
-            >
-              <Play size={16} /> START GAME
-            </button>
-          )}
-        </div>
-      </header>
+            )}
+          </div>
+        }
+      />
 
       {/* Main TV Display Canvas */}
       <main className="flex-1 p-6 sm:p-8 flex flex-col z-10 max-w-7xl mx-auto w-full space-y-6">
@@ -232,11 +219,10 @@ function HostContent() {
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Room Status:</span>
             <span
-              className={`px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase ${
-                isPlaying
+              className={`px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase ${isPlaying
                   ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 animate-pulse'
                   : 'bg-purple-500/20 border border-purple-500/40 text-purple-300'
-              }`}
+                }`}
             >
               {roomState?.status || 'LOBBY'}
             </span>
@@ -247,7 +233,7 @@ function HostContent() {
         {!isPlaying && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
             {/* QR CODE CARD */}
-            <div className="bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 shadow-2xl backdrop-blur-xl flex flex-col items-center text-center space-y-4">
+            <div className="glass-panel p-6 flex flex-col items-center text-center space-y-4">
               <h2 className="text-base font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
                 <Share2 size={18} /> Join Room QR Code
               </h2>
@@ -277,7 +263,7 @@ function HostContent() {
             </div>
 
             {/* JOINED PLAYERS ROSTER */}
-            <div className="md:col-span-2 bg-slate-900/90 border border-purple-500/30 rounded-3xl p-6 shadow-2xl backdrop-blur-xl space-y-4">
+            <div className="md:col-span-2 glass-panel p-6 space-y-4">
               <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
                 <h2 className="text-base font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
                   <Users size={20} className="text-purple-400" /> Active Joined Members ({playersList.length})
@@ -327,11 +313,10 @@ function HostContent() {
           </div>
         )}
 
-        {/* ONCE GAME STARTED: SIDE-BY-SIDE SPLIT VIEW LAYOUT */}
         {isPlaying && (
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start animate-fade-in w-full">
             {/* LEFT COLUMN: 3D Victory Podium (xl:col-span-5) */}
-            <div className="xl:col-span-5 bg-slate-900/80 border border-purple-500/30 rounded-3xl p-5 shadow-2xl backdrop-blur-xl flex flex-col items-center justify-between min-h-[460px]">
+            <div className="xl:col-span-5 glass-panel p-5 flex flex-col items-center justify-between min-h-[460px]">
               <div className="text-center space-y-1 mb-4">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
                   <Crown size={14} className="text-amber-400" /> Leaderboard Podium
@@ -401,7 +386,7 @@ function HostContent() {
             </div>
 
             {/* RIGHT COLUMN: Full Live Leaderboard Rankings Table (xl:col-span-7) */}
-            <div className="xl:col-span-7 bg-slate-900/90 border border-purple-500/30 rounded-3xl p-5 sm:p-6 shadow-2xl backdrop-blur-xl space-y-4">
+            <div className="xl:col-span-7 glass-panel p-5 sm:p-6 space-y-4">
               <div className="flex items-center justify-between border-b border-purple-500/20 pb-3">
                 <h2 className="text-base sm:text-lg font-bold text-purple-200 uppercase tracking-wider flex items-center gap-2">
                   <Trophy size={20} className="text-amber-400" /> Visual Self-Evaluation Standings
@@ -429,9 +414,8 @@ function HostContent() {
                     {sortedPlayers.map((player, idx) => (
                       <tr
                         key={player.id}
-                        className={`hover:bg-purple-950/40 transition font-medium ${
-                          idx === 0 ? 'bg-amber-500/10 font-bold' : ''
-                        }`}
+                        className={`hover:bg-purple-950/40 transition font-medium ${idx === 0 ? 'bg-amber-500/10 font-bold' : ''
+                          }`}
                       >
                         <td className="py-3 px-3 font-extrabold text-slate-200">
                           {idx === 0 ? '🥇 1st' : idx === 1 ? '🥈 2nd' : idx === 2 ? '🥉 3rd' : `#${idx + 1}`}
