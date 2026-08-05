@@ -149,7 +149,7 @@ function LobbyContent() {
       {/* Header */}
       <header className="py-3 px-4 border-b border-purple-500/20 bg-slate-950/80 flex items-center justify-between z-10 shrink-0">
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo-horizental.png" alt="Grape Dawn" width={130} height={36} className="object-contain" priority />
+          <Image src="/logo-horizental.png?v=2" alt="Grape Dawn" width={130} height={36} className="object-contain" priority />
         </Link>
 
         <div className="flex items-center gap-2">

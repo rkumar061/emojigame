@@ -93,7 +93,7 @@ function JoinContent() {
 
       {/* Header */}
       <header className="py-4 px-6 border-b border-purple-500/20 bg-slate-950/60 flex items-center justify-between z-10">
-        <Image src="/logo-horizental.png" alt="Grape Dawn" width={140} height={40} className="object-contain" />
+        <Image src="/logo-horizental.png?v=2" alt="Grape Dawn" width={140} height={40} className="object-contain" />
         <div className="flex items-center gap-2 bg-slate-900 border border-purple-500/30 px-3 py-1.5 rounded-xl">
           <span className="text-xs text-slate-400 font-semibold">ROOM PIN:</span>
           <span className="font-mono text-amber-300 font-extrabold text-base">{pin}</span>

@@ -162,7 +162,7 @@ export default function AdminPage() {
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/logo-horizental.png"
+              src="/logo-horizental.png?v=2"
               alt="Grape Dawn"
               width={150}
               height={40}

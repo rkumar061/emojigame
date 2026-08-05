@@ -34,7 +34,7 @@ export default function LandingPage() {
       <header className="w-full py-4 px-6 border-b border-purple-500/20 bg-slate-950/60 backdrop-blur-md flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
           <Image
-            src="/logo-horizental.png"
+            src="/logo-horizental.png?v=2"
             alt="Grape Dawn Logo"
             width={180}
             height={50}

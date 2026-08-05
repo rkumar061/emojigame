@@ -134,7 +134,7 @@ function ResultsContent() {
       {/* Top Header Bar (No Back to Home button for player) */}
       <header className="py-3 px-4 sm:px-6 border-b border-purple-500/20 bg-slate-950/70 flex items-center justify-between z-10">
         <Image
-          src="/logo-horizental.png"
+          src="/logo-horizental.png?v=2"
           alt="Grape Dawn"
           width={160}
           height={42}
@@ -359,7 +359,7 @@ function ResultsContent() {
               {/* Story Header */}
               <div className="flex flex-col items-center text-center space-y-1 z-10">
                 <Image
-                  src="/logo-horizental.png"
+                  src="/logo-horizental.png?v=2"
                   alt="Grape Dawn"
                   width={150}
                   height={40}

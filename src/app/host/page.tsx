@@ -139,7 +139,7 @@ function HostContent() {
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/logo-horizental.png"
+              src="/logo-horizental.png?v=2"
               alt="Grape Dawn"
               width={200}
               height={55}

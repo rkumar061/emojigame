@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     siteName: "Grape Dawn",
     images: [
       {
-        url: "/logo-horizental.png",
+        url: "/logo-horizental.png?v=2",
         width: 1200,
         height: 630,
         alt: "Grape Dawn BNI Nexora Quiz",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     title: "Grape Dawn | BNI Nexora Speed Member Matching Quiz",
     description:
       "Interactive real-time speed member-matching presentation game by Grape Dawn.",
-    images: ["/logo-horizental.png"],
+    images: ["/logo-horizental.png?v=2"],
   },
 };
 

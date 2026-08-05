@@ -18,7 +18,7 @@ export const GrapeHeader: React.FC<GrapeHeaderProps> = ({
       <Link href="/" className="flex items-center gap-3 group">
         <div className="relative flex items-center">
           <Image
-            src="/logo-horizental.png"
+            src="/logo-horizental.png?v=2"
             alt="Grape Dawn"
             width={compact ? 130 : 170}
             height={compact ? 36 : 48}
